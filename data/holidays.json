@@ -1,0 +1,82 @@
+{
+  "holidays": [
+        {
+      "date": "2025-12-25",
+      "name": "Navidad",
+      "type": "public",
+      "icon": "🎄"
+    },
+    {
+      "date": "2026-01-01",
+      "name": "Año Nuevo",
+      "type": "public",
+      "icon": "🎉"
+    },
+    {
+      "date": "2026-02-24",
+      "name": "Día de la Memoria por la Verdad y la Justicia",
+      "type": "public",
+      "icon": "🕯️"
+    },
+    {
+      "date": "2026-04-02",
+      "name": "Día del Veterano y de los Caídos en la Guerra de Malvinas",
+      "type": "public",
+      "icon": "🇦🇷"
+    },
+    {
+      "date": "2026-05-01",
+      "name": "Día del Trabajador",
+      "type": "public",
+      "icon": "👷‍♂️"
+    },
+    {
+      "date": "2026-05-25",
+      "name": "Día de la Revolución de Mayo",
+      "type": "public",
+      "icon": "🇦🇷"
+    },
+    {
+      "date": "2026-06-20",
+      "name": "Paso a la Inmortalidad del General Manuel Belgrano",
+      "type": "public",
+      "icon": "🕯️"
+    },
+    {
+      "date": "2026-07-09",
+      "name": "Día de la Independencia",
+      "type": "public",
+      "icon": "🇦🇷"
+    },
+    {
+      "date": "2026-08-17",
+      "name": "Paso a la Inmortalidad del General José de San Martín",
+      "type": "public",
+      "icon": "🕯️"
+    },
+    {
+      "date": "2026-10-12",
+      "name": "Día del Respeto a la Diversidad Cultural",
+      "type": "public",
+      "icon": "🌎"
+    },
+    {
+      "date": "2026-11-20",
+      "name": "Día de la Soberanía Nacional",
+      "type": "public",
+      "icon": "🇦🇷"
+    },
+    {
+      "date": "2026-12-08",
+      "name": "Inmaculada Concepción de María",
+      "type": "public",
+      "icon": "🙏"
+    },
+    {
+      "date": "2026-12-25",
+      "name": "Navidad",
+      "type": "public",
+      "icon": "🎄"
+    }
+  ]
+}

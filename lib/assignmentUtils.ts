@@ -1,12 +1,14 @@
 import { Assignment, AssignmentType } from "../types/assignment.type";
+import { isHoliday } from "@/lib/dateUtils";
 
 export const ASSIGNMENT_COLORS = {
   [AssignmentType.REGULAR]:  'bg-guard-day1',
   [AssignmentType.SPECIAL]: 'bg-guard-day2',
-  [AssignmentType. HOLIDAY]: 'bg-amber-100',
+  [AssignmentType.HOLIDAY]: 'bg-gray-200',
   noWorkDay: 'bg-gray-100',
   noAssignment: 'bg-white',
-  replacement: 'bg-blue-50' // Opcional:  color para reemplazos
+  replacement: 'bg-blue-50',
+  holiday: 'bg-gray-200' // Color específico para feriados
 } as const;
 
 /**
@@ -50,57 +52,45 @@ export const determineAssignmentType = (
  * Obtiene la clase de fondo apropiada para una asignación
  * @param isWorkDay - Si es un día laboral
  * @param assignment - La asignación (opcional)
+ * @param date - Fecha para verificar si es feriado
  * @returns La clase CSS de fondo
  */
 export const getBackgroundClass = (
   isWorkDay: boolean,
-  assignment?: Assignment
+  assignment?: Assignment,
+  date?: Date
 ): string => {
-  // Caso 1: No es día laboral
+  // Caso 1: Es un feriado (prioridad máxima)
+  if (date && isHoliday(date)) {
+    return ASSIGNMENT_COLORS.holiday;
+  }
+
+  // Caso 2: No es día laboral (fin de semana)
   if (!isWorkDay) {
     return ASSIGNMENT_COLORS.noWorkDay;
   }
 
-  // Caso 2: No hay asignación o no tiene persona asignada
+  // Caso 3: No hay asignación o no tiene persona asignada
   if (!assignment || !assignment.personId) {
-    return ASSIGNMENT_COLORS. noAssignment;
+    return ASSIGNMENT_COLORS.noAssignment;
   }
 
-  // Caso 3: Es un reemplazo
+  // Caso 4: Es un reemplazo
   if (assignment.isReplacement) {
     return `${ASSIGNMENT_COLORS.replacement} border-l-4 border-blue-400`;
   }
 
-  // Caso 4: Determinar el tipo y retornar su color
+  // Caso 5: Determinar el tipo y retornar su color
   const type = determineAssignmentType(assignment, isWorkDay);
   
-  if (! type) {
+  if (!type) {
     return ASSIGNMENT_COLORS.noAssignment;
   }
 
   return ASSIGNMENT_COLORS[type];
 };
 
-/**
- * Verifica si una fecha es feriado
- * @param date - Fecha a verificar
- * @returns true si es feriado
- */
-const isHoliday = (date: Date): boolean => {
-  // Implementa tu lógica de feriados aquí
-  // Ejemplo básico con algunos feriados fijos
-  const holidays = [
-    { month: 0, day: 1 },   // Año nuevo
-    { month: 4, day: 1 },   // Día del trabajador
-    { month: 11, day: 25 }, // Navidad
-    // Agregar más feriados según tu país/región
-  ];
 
-  const month = date.getMonth();
-  const day = date.getDate();
-
-  return holidays.some(h => h.month === month && h.day === day);
-};
 
 /**
  * Obtiene un color de texto contrastante para el fondo
@@ -137,3 +127,17 @@ export const getAssignmentBadge = (assignment: Assignment): string => {
 
   return assignment.type ? badges[assignment.type as AssignmentType] : '';
 };
+
+/**
+ * Convierte un array de asignaciones a un Map para búsquedas O(1)
+ * Útil para calendarios donde se necesita buscar por fecha frecuentemente
+ * @param assignments - Array de asignaciones
+ * @returns Map con fecha como key y asignación como valor
+ */
+export function createAssignmentMap(assignments: Assignment[]): Map<string, Assignment> {
+  const map = new Map<string, Assignment>();
+  assignments.forEach(assignment => {
+    map.set(assignment.date, assignment);
+  });
+  return map;
+}
