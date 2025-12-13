@@ -3,15 +3,42 @@
  * Permite resetear la rotación cuando sea necesario
  */
 
-import { useCallback, useState } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 import { 
   loadRotationState, 
   clearRotationState, 
   RotationState 
 } from '@/lib/rotationState';
 
+// Store externo para el estado de rotación
+let rotationStateCache: RotationState | null = null;
+let listeners: Array<() => void> = [];
+
+function getSnapshot(): RotationState | null {
+  if (typeof window === 'undefined') return null;
+  if (rotationStateCache === null) {
+    rotationStateCache = loadRotationState();
+  }
+  return rotationStateCache;
+}
+
+function getServerSnapshot(): RotationState | null {
+  return null;
+}
+
+function subscribe(callback: () => void) {
+  listeners.push(callback);
+  return () => {
+    listeners = listeners.filter(l => l !== callback);
+  };
+}
+
+function notifyListeners() {
+  listeners.forEach(listener => listener());
+}
+
 export function useRotationControl() {
-  const [rotationState, setRotationState] = useState<RotationState | null>(() => loadRotationState());
+  const rotationState = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   
   /**
    * Reinicia la rotación desde el principio
@@ -19,7 +46,8 @@ export function useRotationControl() {
    */
   const resetRotation = useCallback(() => {
     clearRotationState();
-    setRotationState(null);
+    rotationStateCache = null;
+    notifyListeners();
     // Forzar re-render del calendario
     window.dispatchEvent(new Event('rotation-reset'));
   }, []);
@@ -28,8 +56,8 @@ export function useRotationControl() {
    * Recarga el estado actual de rotación
    */
   const refreshState = useCallback(() => {
-    const state = loadRotationState();
-    setRotationState(state);
+    rotationStateCache = loadRotationState();
+    notifyListeners();
   }, []);
   
   return {
@@ -37,5 +65,6 @@ export function useRotationControl() {
     resetRotation,
     refreshState,
     hasState: rotationState !== null,
+    isHydrated: typeof window !== 'undefined',
   };
 }
