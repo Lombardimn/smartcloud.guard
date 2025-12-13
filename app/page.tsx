@@ -4,6 +4,7 @@ import MonthSelector from "@/components/MonthSelector";
 import { useState, useCallback } from "react";
 import { addMonths } from "@/lib/dateUtils";
 import Calendar from "@/components/Calendar";
+import { RotationControl } from "@/components/RotationControl";
 
 export default function Home() {
   // Estado para la fecha del calendario
@@ -32,6 +33,9 @@ export default function Home() {
       </header>
 
       <section className="max-w-5xl flex flex-col px-4 gap-4">
+        {/* Control de rotación */}
+        <RotationControl />
+        
         {/* Selector de mes */}
         <div className="flex flex-col gap-4">
           <MonthSelector

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, memo } from 'react';
+import { useMemo, memo, useEffect, useState } from 'react';
 import { generateScheduleForMonthFromData } from '@/lib/scheduleGenerator';
 import { getDaysInMonth, getEmptyCellsCount, toISODate, getMonthName } from '@/lib/dateUtils';
 import { createAssignmentMap } from '@/lib/assignmentUtils';
@@ -28,9 +28,23 @@ EmptyCell.displayName = 'EmptyCell';
 /**
  * Componente principal del calendario de guardias
  * Muestra un mes completo con asignaciones y manejo de reemplazos
+ * Mantiene continuidad de rotación entre meses
  */
 function Calendar({ year, month }: CalendarProps) {
+  const [resetKey, setResetKey] = useState(0);
+  
+  // Escuchar eventos de reset de rotación
+  useEffect(() => {
+    const handleRotationReset = () => {
+      setResetKey(prev => prev + 1);
+    };
+    
+    window.addEventListener('rotation-reset', handleRotationReset);
+    return () => window.removeEventListener('rotation-reset', handleRotationReset);
+  }, []);
+  
   // Generar asignaciones del mes con manejo de errores
+  // Se regenera cuando cambia year, month o se resetea la rotación
   const assignments = useMemo(() => {
     try {
       return generateScheduleForMonthFromData(year, month);
@@ -38,7 +52,8 @@ function Calendar({ year, month }: CalendarProps) {
       console.error('Error generando schedule:', error);
       return [];
     }
-  }, [year, month]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [year, month, resetKey]);
 
   // Crear Map de asignaciones para búsquedas O(1)
   const assignmentMap = useMemo(() => 

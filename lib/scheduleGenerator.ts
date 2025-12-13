@@ -8,6 +8,7 @@ import { getWorkDaysInMonth, formatDate } from '@/lib/dateUtils';
 import { validateMonthYear, validateRotationOrder } from '@/lib/scheduleValidators';
 import { buildReplacementLookupMap, applyReplacements } from '@/lib/replacementUtils';
 import { getRotationOrder } from '@/lib/teamUtils';
+import { calculateStartingPoint, updateRotationState } from '@/lib/rotationState';
 
 /**
  * Configuración para la generación de schedule
@@ -45,22 +46,43 @@ function createAssignment(
 
 /**
  * Genera las asignaciones base sin reemplazos
- * Implementa rotación circular de 2 días por persona
+ * Implementa rotación circular de 2 días por persona con continuidad entre meses
  * 
  * @param workDays - Array de días laborables
  * @param rotationOrder - Orden de rotación de personas
+ * @param year - Año del mes (para persistir estado)
+ * @param month - Mes (0-11) (para persistir estado)
  * @returns Array de asignaciones base
  * 
  * Complejidad: O(n) donde n = número de días laborables
  */
 function generateBaseAssignments(
   workDays: Date[],
-  rotationOrder: string[]
+  rotationOrder: string[],
+  year: number,
+  month: number
 ): Assignment[] {
   const assignments: Assignment[] = [];
-  let currentPersonIndex = 0;
+  
+  // Calcular punto de inicio basado en el estado del mes anterior
+  const startingPoint = calculateStartingPoint(year, month, rotationOrder.length);
+  let currentPersonIndex = startingPoint.personIndex;
+  let currentDayType: 'day1' | 'day2' | 'complete' = startingPoint.dayType;
   let dayIndex = 0;
   
+  // Si el mes anterior dejó el ciclo a la mitad (day2), continuar con day2
+  if (currentDayType === 'day2' && dayIndex < workDays.length) {
+    const personId = rotationOrder[currentPersonIndex];
+    assignments.push(
+      createAssignment(workDays[dayIndex], personId, 'day2')
+    );
+    dayIndex++;
+    // Pasar a la siguiente persona con ciclo completo
+    currentPersonIndex = (currentPersonIndex + 1) % rotationOrder.length;
+    currentDayType = 'complete';
+  }
+  
+  // Continuar con el patrón normal de 2 días por persona
   while (dayIndex < workDays.length) {
     const personId = rotationOrder[currentPersonIndex];
     const remainingDays = workDays.length - dayIndex;
@@ -71,19 +93,32 @@ function generateBaseAssignments(
         createAssignment(workDays[dayIndex], personId, 'day1')
       );
       dayIndex++;
+      currentDayType = 'day1';
     }
     
     // Día 2 de guardia (si hay días disponibles)
-    if (remainingDays >= 2) {
+    if (remainingDays >= 2 && dayIndex < workDays.length) {
       assignments.push(
         createAssignment(workDays[dayIndex], personId, 'day2')
       );
       dayIndex++;
+      currentDayType = 'complete';
     }
     
-    // Siguiente persona en la rotación circular
-    currentPersonIndex = (currentPersonIndex + 1) % rotationOrder.length;
+    // Si completó el ciclo o solo asignó day1, pasar a la siguiente persona
+    if (currentDayType === 'complete' || remainingDays < 2) {
+      currentPersonIndex = (currentPersonIndex + 1) % rotationOrder.length;
+    }
   }
+  
+  // Guardar el estado de rotación para el próximo mes
+  updateRotationState(
+    year,
+    month,
+    currentPersonIndex,
+    currentDayType,
+    assignments.length
+  );
   
   return assignments;
 }
@@ -129,7 +164,9 @@ export function generateScheduleForMonth(
   // 3. Generar asignaciones base (sin reemplazos)
   const baseAssignments = generateBaseAssignments(
     workDays,
-    config.rotationOrder
+    config.rotationOrder,
+    year,
+    month
   );
   
   // 4. Si no hay reemplazos, retornar directamente
