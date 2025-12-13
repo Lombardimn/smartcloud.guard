@@ -7,6 +7,7 @@ El sistema calcula automáticamente la rotación de guardias usando la fecha `st
 ## Configuración
 
 En `data/team.json`:
+
 ```json
 {
   "rotationOrder": ["gc", "rv", "mb", "mc", "mp", "fv"],
@@ -52,12 +53,14 @@ Tipo = 1 día restante → mb debe completar con day2
 ### 3. Ejemplo Completo
 
 **Configuración:**
+
 - `startDate`: "2026-01-01" (jueves)
 - `rotationOrder`: ["gc", "rv", "mb", "mc", "mp", "fv"] (6 personas)
 - Cada persona: 2 días consecutivos
 
 **Enero 2026:**
-```
+
+```cmd
 Días laborables desde startDate = 0
 Empieza: gc (índice 0)
 
@@ -74,7 +77,8 @@ Total: 21 días laborables
 ```
 
 **Febrero 2026:**
-```
+
+```cmd
 Días laborables desde startDate = 21
 Ciclos = 21 ÷ 2 = 10 completos + 1 restante
 Persona = 10 % 6 = 4 → mp (índice 4)
@@ -89,7 +93,8 @@ Pero hay 1 día restante = mc (índice 3) debe completar day2
 ```
 
 **Marzo 2026:**
-```
+
+```cmd
 Días laborables desde startDate = 41 (21 ene + 20 feb)
 Ciclos = 41 ÷ 2 = 20 completos + 1 restante
 Persona = 20 % 6 = 2 → mb (índice 2)
@@ -102,7 +107,8 @@ Resto = 1 día → mb debe hacer day2
 ```
 
 **Julio 2026 (sin ver meses anteriores):**
-```
+
+```cmd
 Días laborables desde 2026-01-01 hasta 2026-07-01 = 126 días
 Ciclos = 126 ÷ 2 = 63 completos
 Persona = 63 % 6 = 3 → mc (índice 3)
@@ -118,6 +124,7 @@ Resto = 0 → Ciclo completo
 ### Archivos Principales
 
 #### `lib/rotationState.ts`
+
 Función clave: `calculateStartingPoint(year, month, rotationOrderLength)`
 
 ```typescript
@@ -131,14 +138,17 @@ const remainderDays = workdaysSinceStart % 2;
 ```
 
 #### `lib/scheduleGenerator.ts`
+
 Usa `calculateStartingPoint()` para saber desde dónde iniciar cada mes.
 
 #### `components/RotationControl.tsx`
+
 Muestra la fecha de inicio configurada y permite recalcular.
 
 ### Función de Reset
 
 Al presionar "Recalcular":
+
 1. Limpia el localStorage (estado guardado)
 2. Fuerza re-cálculo desde `startDate`
 3. **No cambia la lógica** - simplemente recalcula
@@ -146,17 +156,22 @@ Al presionar "Recalcular":
 ## Uso
 
 ### Navegación Normal
+
 - Cambia de mes libremente con ◀ ▶
 - El sistema siempre calcula desde `startDate`
 - Puedes ir a cualquier mes (pasado o futuro)
 
 ### Ver Información
+
 El panel superior muestra:
+
 - **"Rotación calculada desde: 2026-01-01"** cuando no hay estado guardado
 - **"Rotación Continua (desde 2026-01-01)"** con detalles del último mes procesado
 
 ### Cambiar Fecha de Inicio
+
 Para usar una fecha diferente:
+
 1. Edita `data/team.json` → `config.startDate`
 2. Presiona "Recalcular" en la UI
 3. Todo se recalcula desde la nueva fecha
@@ -164,14 +179,16 @@ Para usar una fecha diferente:
 ## Casos de Uso
 
 ### ✅ Ver mes futuro
-```
+
+```cmd
 Hoy: Diciembre 2025
 Quiero ver: Julio 2026
 Resultado: El sistema calcula automáticamente desde startDate
 ```
 
 ### ✅ Ver mes pasado
-```
+
+```cmd
 Hoy: Diciembre 2025
 startDate: Enero 2026
 Quiero ver: Octubre 2025
@@ -179,7 +196,8 @@ Resultado: Como es antes de startDate, inicia desde rotationOrder[0]
 ```
 
 ### ✅ Cambiar startDate
-```
+
+```cmd
 Antes: "2026-01-01"
 Después: "2025-12-01"
 Acción: Editar team.json + "Recalcular"
@@ -199,6 +217,7 @@ Resultado: Todo se recalcula desde diciembre 2025
 ## Detalles Técnicos
 
 ### Manejo de Días Laborables
+
 ```typescript
 function calculateWorkdaysSinceStart(startDate, targetYear, targetMonth) {
   let workDays = 0;
@@ -221,7 +240,9 @@ function calculateWorkdaysSinceStart(startDate, targetYear, targetMonth) {
 - Cuenta solo días laborables reales
 
 ### localStorage (Opcional)
+
 El sistema aún guarda estado en localStorage para:
+
 - Mostrar info del último mes procesado
 - Optimización (evita recalcular el mismo mes)
 - **No afecta el cálculo** si está vacío

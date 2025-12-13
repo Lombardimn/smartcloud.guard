@@ -7,15 +7,18 @@ This document describes the Progressive Web App (PWA) implementation for SmartCl
 ## What Was Implemented
 
 ### 1. PWA Plugin Configuration
+
 - **Package**: `@ducanh2912/next-pwa` v10.2.9
 - **Compatibility**: Next.js 16.0.10 with webpack
 - **Service Worker**: Auto-generated at `/sw.js`
 - **Status**: ✅ No security vulnerabilities
 
 ### 2. Web App Manifest
+
 **Location**: `/public/manifest.json`
 
 Key features:
+
 - Name: "SmartCloud Guard"
 - Short name: "SC Guard"
 - Display mode: standalone (fullscreen app experience)
@@ -31,6 +34,7 @@ Key features:
 **Location**: `/public/icons/`
 
 Created 10 PWA icons:
+
 - `icon-72x72.png` - Extra small devices
 - `icon-96x96.png` - Small devices
 - `icon-128x128.png` - Medium devices
@@ -43,6 +47,7 @@ Created 10 PWA icons:
 - `apple-touch-icon.png` - iOS devices (180x180)
 
 All icons feature:
+
 - Blue gradient background (#1e40af to #3b82f6)
 - "SC" text branding
 - PNG format with transparency
@@ -53,6 +58,7 @@ All icons feature:
 **Location**: `/public/offline.html`
 
 Features:
+
 - Beautiful, branded offline fallback page
 - Retry connection button
 - Responsive design
@@ -72,6 +78,7 @@ The service worker implements intelligent caching:
 | Pages | Network First (10s timeout) | 24 hours | 32 |
 
 **Strategy Explanations**:
+
 - **Cache First**: Serves from cache, updates in background (best for static resources)
 - **Network First**: Tries network first, falls back to cache (best for dynamic content)
 - **Stale While Revalidate**: Serves from cache immediately, updates in background (best for assets that change occasionally)
@@ -83,6 +90,7 @@ The service worker implements intelligent caching:
 Implemented comprehensive metadata:
 
 #### PWA Metadata
+
 - Application name
 - Viewport configuration with viewport-fit=cover
 - Theme color for mobile browsers
@@ -90,24 +98,29 @@ Implemented comprehensive metadata:
 - Icon references (multiple sizes)
 
 #### Apple-specific
+
 - Web app capable: true
 - Status bar style: default
 - App title for iOS
 - Apple touch icon
 
 #### Social Media
+
 **Open Graph**:
+
 - Type: website
 - Locale: en_US
 - Title, description, images
 - Site name
 
 **Twitter Card**:
+
 - Card type: summary_large_image
 - Title, description, images
 - Creator tag
 
 #### SEO
+
 - Canonical URL
 - Keywords
 - Authors
@@ -140,26 +153,32 @@ Implemented comprehensive metadata:
 ## How to Use
 
 ### Development
+
 ```bash
 npm run dev
 ```
+
 - PWA features are **disabled** in development
 - Uses Turbopack for faster builds
 - No service worker generation
 
 ### Production Build
+
 ```bash
 npm run build
 ```
+
 - Uses webpack (required for PWA plugin)
 - Generates service worker
 - Creates optimized production build
 - Service worker includes all caching strategies
 
 ### Production Server
+
 ```bash
 npm start
 ```
+
 - Serves the production build
 - Service worker active
 - Full PWA features enabled
@@ -167,35 +186,43 @@ npm start
 ## Testing the PWA
 
 ### 1. Build and Start
+
 ```bash
 npm run build
 npm start
 ```
 
 ### 2. Chrome DevTools
+
 Open Chrome DevTools (F12) and navigate to:
 
 **Application Tab**:
+
 - **Manifest**: Verify all fields are correct
 - **Service Workers**: Confirm registration and status
 - **Cache Storage**: Check cached resources
 
 **Lighthouse Tab**:
+
 - Run audit with "Progressive Web App" selected
 - Should score high on all PWA criteria
 
 ### 3. Install Prompt
+
 On desktop (Chrome/Edge):
+
 1. Look for install icon in address bar
 2. Click to install
 3. App opens in standalone window
 
 On mobile (Chrome/Safari):
+
 1. Open menu
 2. Select "Add to Home Screen" or "Install"
 3. App appears on home screen
 
 ### 4. Offline Testing
+
 1. Open app in browser
 2. Open DevTools > Network tab
 3. Select "Offline" throttling
@@ -204,7 +231,7 @@ On mobile (Chrome/Safari):
 
 ## File Structure
 
-```
+```cmd
 smartcloud.guard/
 ├── app/
 │   ├── layout.tsx          # PWA metadata and viewport config
@@ -234,14 +261,18 @@ smartcloud.guard/
 ## Customization
 
 ### Update Theme Colors
+
 To change the app theme color:
+
 1. Update `theme_color` in `/public/manifest.json`
 2. Update `themeColor` in `/app/layout.tsx`
 3. Update colors in `/public/offline.html`
 4. Regenerate icons with new colors
 
 ### Modify Caching Strategies
+
 Edit `/next.config.ts` in the `workboxOptions.runtimeCaching` array:
+
 ```typescript
 {
   urlPattern: /your-pattern/,
@@ -257,14 +288,18 @@ Edit `/next.config.ts` in the `workboxOptions.runtimeCaching` array:
 ```
 
 ### Update Icons
+
 Replace icons in `/public/icons/` directory. Maintain the same sizes:
+
 - 72x72, 96x96, 128x128, 144x144, 152x152
 - 192x192, 384x384, 512x512
 - 512x512-maskable (with extra padding for safe zone)
 - apple-touch-icon (180x180)
 
 ### Customize Offline Page
+
 Edit `/public/offline.html` to match your brand:
+
 - Update colors
 - Change messaging
 - Add your logo
@@ -273,24 +308,28 @@ Edit `/public/offline.html` to match your brand:
 ## Troubleshooting
 
 ### Service Worker Not Registering
+
 1. Ensure you're using HTTPS (or localhost)
 2. Check browser console for errors
 3. Verify `npm run build` completed successfully
 4. Clear browser cache and reload
 
 ### Icons Not Showing
+
 1. Verify icons exist in `/public/icons/`
 2. Check manifest.json icon paths
 3. Clear browser cache
 4. Verify file sizes match declared sizes
 
 ### Build Fails
+
 1. Ensure using `--webpack` flag: `npm run build`
 2. Clear `.next` directory: `rm -rf .next`
 3. Reinstall dependencies: `rm -rf node_modules && npm install`
 4. Check Node.js version (requires Node 18+)
 
 ### PWA Not Installable
+
 1. Run Lighthouse audit for specific requirements
 2. Verify manifest.json is valid
 3. Ensure service worker is registered
@@ -300,6 +339,7 @@ Edit `/public/offline.html` to match your brand:
 ## Browser Support
 
 ### Desktop
+
 - ✅ Chrome 90+
 - ✅ Edge 90+
 - ✅ Opera 76+
@@ -307,6 +347,7 @@ Edit `/public/offline.html` to match your brand:
 - ⚠️ Safari 15+ (limited PWA support)
 
 ### Mobile
+
 - ✅ Chrome for Android 90+
 - ✅ Samsung Internet 14+
 - ✅ Safari for iOS 14.3+ (limited features)
@@ -317,6 +358,7 @@ Edit `/public/offline.html` to match your brand:
 ## Security Considerations
 
 ### Implemented
+
 - ✅ Service worker only on HTTPS
 - ✅ No security vulnerabilities in dependencies
 - ✅ CodeQL security scan passed
@@ -324,6 +366,7 @@ Edit `/public/offline.html` to match your brand:
 - ✅ No hardcoded secrets
 
 ### Recommendations
+
 1. Deploy only to HTTPS domains
 2. Implement Content Security Policy headers
 3. Regular dependency updates
@@ -333,12 +376,14 @@ Edit `/public/offline.html` to match your brand:
 ## Performance
 
 ### Metrics
+
 - **Build Time**: ~6 seconds (with webpack)
 - **Service Worker Size**: ~6KB (gzipped)
 - **Workbox Runtime**: ~22KB (gzipped)
 - **Total PWA Overhead**: ~28KB
 
 ### Optimizations
+
 - Efficient caching strategies reduce bandwidth
 - Offline support improves perceived performance
 - Static page generation for instant loading
@@ -347,7 +392,9 @@ Edit `/public/offline.html` to match your brand:
 ## Maintenance
 
 ### Regular Updates
+
 1. **Dependencies**: Update next-pwa monthly
+
    ```bash
    npm update @ducanh2912/next-pwa
    ```
@@ -359,6 +406,7 @@ Edit `/public/offline.html` to match your brand:
 4. **Caching**: Review strategies quarterly based on usage
 
 ### Monitoring
+
 - Track service worker installation rates
 - Monitor offline usage patterns
 - Check browser console for SW errors
@@ -379,6 +427,7 @@ Same as the main project.
 ## Support
 
 For PWA-specific issues, check:
+
 1. This documentation
 2. Browser DevTools console
 3. Lighthouse audit results
