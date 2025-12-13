@@ -15,12 +15,12 @@ export const NavigationButton = memo(({ onClick, direction, ariaLabel }: Navigat
       onClick={onClick}
       aria-label={ariaLabel}
       className="
-        min-w-[44px] min-h-[44px] 
+        min-w-11 min-h-11 
         flex items-center justify-center
         px-3 sm:px-4 py-2 
-        bg-blue-500 text-white text-md rounded-lg 
-        hover:bg-blue-600 active:bg-blue-700
-        focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2
+        bg-[#100037] text-white text-md rounded-lg 
+        hover:bg-[#1e40af] active:bg-[#1e3a8a]
+        focus:outline-none focus:ring-2 focus:ring-[#1e40af] focus:ring-offset-2
         transition-all duration-200
         disabled:opacity-50 disabled:cursor-not-allowed
       "

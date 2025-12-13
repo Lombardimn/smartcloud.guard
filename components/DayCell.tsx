@@ -14,7 +14,7 @@ interface DayCellProps {
 
 /** Función de estilos para el borde */
 const getBorderClass = (isToday: boolean): string => {
-  return isToday ? 'border-4 border-blue-500' : 'border border-gray-200';
+  return isToday ? 'border-4 border-blue-500 dark:border-amber-500' : 'border border-gray-400 dark:border-gray-700';
 };
 
 function DayCell({ date, assignment }: DayCellProps) {
@@ -49,7 +49,8 @@ function DayCell({ date, assignment }: DayCellProps) {
         aspect-square p-2 sm:p-3 rounded-lg transition-all hover:shadow-lg
         ${bgClass}
         ${borderClass}
-        ${!isWorkDay ? 'opacity-50 bg-amber-500' : ''}
+        ${!isWorkDay ? 'opacity-50' : ''}
+        ${isHolidayDay ? 'bg-yellow-100 dark:bg-yellow-700' : ''}
       `}
       role="gridcell"
       aria-label={ariaLabel}
@@ -71,7 +72,7 @@ function DayCell({ date, assignment }: DayCellProps) {
             <span className="text-2xl mb-1">
               {holidayInfo?.icon || '🎉'}
             </span>
-            <span className="hidden sm:block text-xs text-gray-600 font-medium leading-tight">
+            <span className="hidden sm:block text-xs text-gray-600 dark:text-zinc-50 font-medium leading-tight">
               {holidayInfo?.name || 'Feriado'}
             </span>
           </div>

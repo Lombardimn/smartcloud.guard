@@ -23,7 +23,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex flex-col min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
+    <main className="flex flex-col min-h-screen items-center justify-center">
       <header className="flex flex-col items-start w-full max-w-5xl px-4 m-8">
         <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-100">
           Guardia de Bugs 🐞
@@ -42,7 +42,7 @@ export default function Home() {
           />
 
           {/* Calendario */}
-          <div className="bg-zinc-100 p-4 rounded-lg shadow">
+          <div className="bg-zinc-100 dark:bg-purple-950/20 p-4 rounded-lg shadow">
             <Calendar
               year={currentDate.getFullYear()}
               month={currentDate.getMonth()}

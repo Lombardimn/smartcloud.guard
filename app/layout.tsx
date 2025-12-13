@@ -89,7 +89,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${outfit.variable} bg-zinc-50 dark:bg-black antialiased`}>
+      <body className={`${outfit.variable} antialiased`}>
         {children}
       </body>
     </html>

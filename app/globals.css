@@ -2,7 +2,7 @@
 
 :root {
   --background: oklch(98.5% 0 0);
-  --foreground: oklch(14.1% 0.005 285.823);
+  --foreground: oklch(0.17 0.1 285.54);
 }
 
 @theme inline {
@@ -13,7 +13,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: oklch(14.1% 0.005 285.823);
+    --background: oklch(0.17 0.1 285.54);
     --foreground: oklch(98.5% 0 0);
   }
 }

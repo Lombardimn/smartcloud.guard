@@ -100,12 +100,12 @@ export const getTextColorClass = (assignmentType?:  AssignmentType | null): stri
   if (!assignmentType) return 'text-gray-600';
   
   const textColors = {
-    [AssignmentType.REGULAR]: 'text-gray-900',
-    [AssignmentType.SPECIAL]: 'text-gray-900',
-    [AssignmentType.HOLIDAY]: 'text-amber-900'
+    [AssignmentType.REGULAR]: 'text-gray-900 dark:text-gray-100',
+    [AssignmentType.SPECIAL]: 'text-gray-900 dark:text-gray-100',
+    [AssignmentType.HOLIDAY]: 'text-amber-900 dark:text-zinc-50',
   };
 
-  return textColors[assignmentType] || 'text-gray-900';
+  return textColors[assignmentType] || 'text-gray-900 dark:text-zinc-50';
 };
 
 /**

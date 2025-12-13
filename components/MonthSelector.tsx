@@ -40,13 +40,13 @@ function MonthSelector({
 
   return (
     <nav 
-      className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 bg-zinc-100 p-2 rounded-lg shadow"
+      className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 bg-zinc-100 dark:bg-purple-950/20 p-2 rounded-lg shadow"
       aria-label="Navegación del calendario"
     >
       {/* Título - Arriba en mobile, centro en desktop */}
       <div className="w-full sm:w-auto text-center sm:order-0">
         <h2 
-          className="text-lg sm:text-xl font-bold mx-4 text-gray-900"
+          className="text-lg sm:text-xl font-bold mx-4 text-gray-900 dark:text-zinc-50"
           aria-live="polite"
           aria-atomic="true"
         >
@@ -54,7 +54,7 @@ function MonthSelector({
             {monthName} {year}
           </time>
           {isCurrent && (
-            <span className="ml-2 text-xs font-normal uppercase text-emerald-800 px-1.5 py-0.5 rounded-md bg-emerald-100" aria-label="(mes actual)">
+            <span className="ml-2 text-xs font-normal uppercase text-zinc-50 dark:text-zinc-50 px-1.5 py-0.5 rounded-md bg-[#100037] dark:bg-[#1e40af]" aria-label="(mes actual)">
               Actual
             </span>
           )}

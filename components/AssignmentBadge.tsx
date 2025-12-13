@@ -25,7 +25,7 @@ export const AssignmentBadge = memo(({ type, dayType, isReplacement }: Assignmen
       {/* Tipo de asignación (Regular, Especial, Feriado, Reemplazo) */}
       {assignmentLabel && (
         <div className={`text-xs flex items-center gap-1 font-medium ${
-          isReplacement ? 'text-blue-600' : 'text-gray-700'
+          isReplacement ? 'text-blue-600' : 'text-gray-700 dark:text-gray-400'
         }`}>
           <span>{assignmentLabel}</span>
         </div>
