@@ -56,6 +56,7 @@ const PATHS = {
 const BACKGROUNDS = {
   transparent: { r: 0, g: 0, b: 0, alpha: 0 },
   white: { r: 255, g: 255, b: 255, alpha: 1 },
+  default: { r: 15, g: 0, b: 53, alpha: 1 },
 } as const;
 
 /**
@@ -117,7 +118,7 @@ async function generateMaskableIcon(config: IconConfig): Promise<void> {
       width: size,
       height: size,
       channels: 4,
-      background: BACKGROUNDS.white,
+      background: BACKGROUNDS.default,
     }
   }).png().toBuffer();
   
