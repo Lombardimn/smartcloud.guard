@@ -7,8 +7,7 @@ export const ASSIGNMENT_COLORS = {
   [AssignmentType.HOLIDAY]: 'bg-gray-200',
   noWorkDay: 'bg-gray-100',
   noAssignment: 'bg-white',
-  replacement: 'bg-blue-50',
-  holiday: 'bg-gray-200' // Color específico para feriados
+  replacement: 'bg-blue-50'
 } as const;
 
 /**
