@@ -23,11 +23,11 @@ export const metadata: Metadata = {
   },
   description: "SmartCloud Guard - Progressive Web Application for cloud security monitoring and management",
   applicationName: "SmartCloud Guard",
-  authors: [{ name: "SmartCloud Team" }],
+  authors: [{ name: "Lombardi Matias" }],
   generator: "Next.js",
   keywords: ["smartcloud", "guard", "security", "cloud", "monitoring", "pwa"],
   referrer: "origin-when-cross-origin",
-  creator: "SmartCloud Team",
+  creator: "lombardidev",
   publisher: "SmartCloud",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   alternates: {
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "es_ES",
     url: "/",
     siteName: "SmartCloud Guard",
     title: "SmartCloud Guard",
@@ -67,11 +67,17 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   icons: {
     icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
       { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
       { url: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png" },
     ],
     apple: [
       { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/icons/apple-icon-120x120.png", sizes: "120x120", type: "image/png" },
+      { url: "/icons/apple-icon-152x152.png", sizes: "152x152", type: "image/png" },
+      { url: "/icons/apple-icon-167x167.png", sizes: "167x167", type: "image/png" },
+      { url: "/icons/apple-icon-180x180.png", sizes: "180x180", type: "image/png" },
     ],
   },
 };

@@ -82,6 +82,8 @@ const withPWA = createNextPWA({
   },
 });
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  allowedDevOrigins: ['local-origin.dev', '*.local-origin.dev'],
+};
 
 export default withPWA(nextConfig);
