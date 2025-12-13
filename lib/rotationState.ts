@@ -1,7 +1,11 @@
 /**
  * Gestión del estado de rotación entre meses
  * Mantiene la continuidad de las guardias usando localStorage
+ * Usa startDate como punto de referencia para cálculos precisos
  */
+
+import { getTeamConfig } from '@/lib/teamUtils';
+import { isWeekday, isHoliday } from '@/lib/dateUtils';
 
 const STORAGE_KEY = 'smartcloud-guard-rotation-state';
 
@@ -65,7 +69,38 @@ export function clearRotationState(): void {
 }
 
 /**
- * Calcula el índice de inicio para un mes basado en el estado anterior
+ * Calcula cuántos días laborables han pasado desde una fecha de inicio hasta una fecha objetivo
+ * @param startDate - Fecha de inicio (formato YYYY-MM-DD)
+ * @param targetYear - Año objetivo
+ * @param targetMonth - Mes objetivo (0-11)
+ * @returns Número de días laborables transcurridos (sin incluir el día de inicio)
+ */
+function calculateWorkdaysSinceStart(startDate: string, targetYear: number, targetMonth: number): number {
+  const start = new Date(startDate);
+  const target = new Date(targetYear, targetMonth, 1);
+  
+  // Si el target es antes o igual al start, retornar 0
+  if (target <= start) {
+    return 0;
+  }
+  
+  let workDays = 0;
+  const current = new Date(start);
+  current.setDate(current.getDate() + 1); // Empezar desde el día siguiente al startDate
+  
+  // Iterar desde el día después de startDate hasta el primer día del mes target
+  while (current < target) {
+    if (isWeekday(current) && !isHoliday(current)) {
+      workDays++;
+    }
+    current.setDate(current.getDate() + 1);
+  }
+  
+  return workDays;
+}
+
+/**
+ * Calcula el índice de inicio para un mes basado en startDate configurado
  * 
  * @param year - Año del mes actual
  * @param month - Mes actual (0-11)
@@ -73,6 +108,48 @@ export function clearRotationState(): void {
  * @returns Objeto con índice de inicio y tipo de día
  */
 export function calculateStartingPoint(
+  year: number,
+  month: number,
+  rotationOrderLength: number
+): { personIndex: number; dayType: 'day1' | 'day2' | 'complete' } {
+  const config = getTeamConfig();
+  const startDate = config.startDate;
+  
+  // Calcular días laborables desde startDate hasta el inicio de este mes
+  const workdaysSinceStart = calculateWorkdaysSinceStart(startDate, year, month);
+  
+  // Cada persona tiene 2 días (day1, day2)
+  const daysPerPerson = 2;
+  const totalCycles = Math.floor(workdaysSinceStart / daysPerPerson);
+  const remainderDays = workdaysSinceStart % daysPerPerson;
+  
+  // Calcular qué persona corresponde
+  const personIndex = totalCycles % rotationOrderLength;
+  
+  // Determinar el tipo de día
+  let dayType: 'day1' | 'day2' | 'complete';
+  if (remainderDays === 0) {
+    dayType = 'complete'; // Comienza un nuevo ciclo completo
+  } else if (remainderDays === 1) {
+    dayType = 'day2'; // Falta completar day2
+  } else {
+    dayType = 'complete';
+  }
+  
+  return { personIndex, dayType };
+}
+
+/**
+ * Calcula el índice de inicio para un mes basado en el estado anterior
+ * DEPRECATED: Reemplazado por calculateStartingPoint que usa startDate
+ * Mantenido para compatibilidad
+ */
+/**
+ * Calcula el índice de inicio para un mes basado en el estado anterior
+ * DEPRECATED: Reemplazado por calculateStartingPoint que usa startDate
+ * Mantenido para compatibilidad
+ */
+export function calculateStartingPointLegacy(
   year: number,
   month: number,
   rotationOrderLength: number

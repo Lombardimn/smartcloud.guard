@@ -2,6 +2,7 @@
 
 import { useRotationControl } from '@/hooks/useRotationControl';
 import { RotateCw, RefreshCw } from 'lucide-react';
+import { getTeamConfig } from '@/lib/teamUtils';
 
 /**
  * Panel de control para gestionar la rotación de guardias
@@ -9,12 +10,13 @@ import { RotateCw, RefreshCw } from 'lucide-react';
  */
 export function RotationControl() {
   const { rotationState, resetRotation, hasState } = useRotationControl();
+  const config = getTeamConfig();
   
   if (!hasState) {
     return (
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <RotateCw className="w-4 h-4" />
-        <span>Rotación iniciando desde el principio</span>
+        <span>Rotación calculada desde: {config.startDate}</span>
       </div>
     );
   }
@@ -24,7 +26,7 @@ export function RotationControl() {
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2 text-sm font-medium text-blue-900 dark:text-blue-100">
           <RotateCw className="w-4 h-4" />
-          <span>Rotación Continua Activa</span>
+          <span>Rotación Continua (desde {config.startDate})</span>
         </div>
         {rotationState && (
           <p className="text-xs text-blue-700 dark:text-blue-300">
@@ -39,11 +41,11 @@ export function RotationControl() {
       <button
         onClick={resetRotation}
         className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-md transition-colors"
-        title="Reiniciar rotación desde el principio"
+        title="Recalcular desde fecha de inicio configurada"
       >
         <RefreshCw className="w-4 h-4" />
-        <span className="hidden sm:inline">Reiniciar Rotación</span>
-        <span className="sm:hidden">Reiniciar</span>
+        <span className="hidden sm:inline">Recalcular</span>
+        <span className="sm:hidden">Resetear</span>
       </button>
     </div>
   );
