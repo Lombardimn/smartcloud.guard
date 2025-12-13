@@ -82,9 +82,6 @@ const withPWA = createNextPWA({
   },
 });
 
-const nextConfig: NextConfig = {
-  // Explicitly configure turbopack to work with PWA
-  turbopack: {},
-};
+const nextConfig: NextConfig = {};
 
 export default withPWA(nextConfig);

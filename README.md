@@ -54,13 +54,13 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 ## Building for Production
 
-To build the application for production, use:
+To build the application for production:
 
 ```bash
-npm run build -- --webpack
+npm run build
 ```
 
-**Note**: Due to compatibility with PWA plugins, use the `--webpack` flag for production builds.
+**Note**: The build uses webpack (via `--webpack` flag) because the PWA plugin requires it. Next.js 16 uses Turbopack by default, but PWA plugins currently work only with webpack.
 
 To start the production server:
 
