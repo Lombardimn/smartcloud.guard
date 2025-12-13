@@ -3,7 +3,7 @@
  * Permite resetear la rotación cuando sea necesario
  */
 
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import { 
   loadRotationState, 
   clearRotationState, 
@@ -11,13 +11,7 @@ import {
 } from '@/lib/rotationState';
 
 export function useRotationControl() {
-  const [rotationState, setRotationState] = useState<RotationState | null>(null);
-  
-  // Cargar estado al montar el componente
-  useEffect(() => {
-    const state = loadRotationState();
-    setRotationState(state);
-  }, []);
+  const [rotationState, setRotationState] = useState<RotationState | null>(() => loadRotationState());
   
   /**
    * Reinicia la rotación desde el principio
