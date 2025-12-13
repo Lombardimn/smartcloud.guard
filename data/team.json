@@ -1,0 +1,46 @@
+{
+  "team": [
+    {
+      "id": "gc",
+      "name": "Gaspar Carraro",
+      "initials": "GC",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "rv",
+      "name": "Rodrigo Velez",
+      "initials": "RV",
+      "color": "#ef4444"
+    },
+    {
+      "id": "mb",
+      "name": "Maximiliano Bonansea",
+      "initials": "MB",
+      "color": "#10b981"
+    },
+    {
+      "id": "mc",
+      "name": "Marcelo Campra",
+      "initials": "MC",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "mp",
+      "name": "Mauro Perelda",
+      "initials": "MP",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "fv",
+      "name": "Facundo Vilanova",
+      "initials": "FV",
+      "color": "#ec4899"
+    }
+  ],
+  "rotationOrder": ["gc", "rv", "mb", "mc", "mp", "fv"],
+  "config": {
+    "daysPerGuard": 2,
+    "workDaysOnly": true,
+    "startDate": "2026-01-01"
+  }
+}

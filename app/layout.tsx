@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import { Outfit } from 'next/font/google'
 import "./globals.css";
+
+const outfit = Outfit({
+    variable: '--font-outfit',
+    subsets: ['latin']
+})
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -76,8 +82,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased">
+    <html lang="es">
+      <body className={`${outfit.variable} bg-zinc-50 dark:bg-black antialiased`}>
         {children}
       </body>
     </html>
