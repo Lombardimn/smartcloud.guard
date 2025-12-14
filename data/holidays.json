@@ -13,7 +13,19 @@
       "icon": "🎉"
     },
     {
-      "date": "2026-02-24",
+      "date": "2026-02-16",
+      "name": "Carnaval",
+      "type": "public",
+      "icon": "🎭"
+    },
+    {
+      "date": "2026-02-17",
+      "name": "Carnaval",
+      "type": "public",
+      "icon": "🎭"
+    },
+    {
+      "date": "2026-03-24",
       "name": "Día de la Memoria por la Verdad y la Justicia",
       "type": "public",
       "icon": "🕯️"
@@ -23,6 +35,12 @@
       "name": "Día del Veterano y de los Caídos en la Guerra de Malvinas",
       "type": "public",
       "icon": "🇦🇷"
+    },
+    {
+      "date": "2026-04-03",
+      "name": "Viernes Santo",
+      "type": "public",
+      "icon": "✝️"
     },
     {
       "date": "2026-05-01",
@@ -35,6 +53,12 @@
       "name": "Día de la Revolución de Mayo",
       "type": "public",
       "icon": "🇦🇷"
+    },
+    {
+      "date": "2026-06-17",
+      "name": "Paso a la Inmortalidad del General Martín Güemes",
+      "type": "public",
+      "icon": "🕯️"
     },
     {
       "date": "2026-06-20",
