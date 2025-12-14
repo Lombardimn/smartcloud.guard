@@ -19,7 +19,7 @@ export function CalendarLegend({ year, month }: CalendarLegendProps) {
   const holidays = useMemo(() => getHolidaysInMonth(year, month), [year, month]);
 
   return (
-    <div className="sm:hidden flex flex-col gap-4 p-4 bg-white dark:bg-[#100037] rounded-lg border border-zinc-200 dark:border-zinc-700">
+    <div className="sm:hidden flex flex-col gap-4 p-4 bg-zinc-50 dark:bg-[#100037] rounded-lg border border-zinc-200 dark:border-zinc-700 shadow">
       {/* Encabezado */}
       <div className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <Calendar className="w-4 h-4" />
