@@ -6,6 +6,8 @@ import { addMonths } from "@/lib/dateUtils";
 import Calendar from "@/components/Calendar";
 import { RotationControl } from "@/components/RotationControl";
 import { CalendarLegend } from "@/components/CalendarLegend";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { GitHub } from "@/components/icons/GitHub";
 
 export default function Home() {
   // Estado para la fecha del calendario
@@ -26,11 +28,31 @@ export default function Home() {
 
   return (
     <main className="flex flex-col min-h-screen items-center justify-center">
-      <header className="flex flex-col items-start w-full max-w-5xl px-4 m-8">
-        <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-100">
-          Guardia de Bugs 🐞
-        </h1>
-        <p className="text-zinc-700 dark:text-zinc-300">Aquí podrás verificar qué días te corresponden de guardia.</p>
+      <header className="flex items-center justify-between w-full max-w-5xl px-4 m-8 gap-4">
+        {/* Título y descripción */}
+        <div className="flex flex-col items-start flex-1">
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
+            Guardia de Bugs 🐞
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Aquí podrás verificar qué días te corresponden de guardia.
+          </p>
+        </div>
+
+        {/* Controles: GitHub y Theme Toggle */}
+        <div className="flex items-center gap-2 sm:gap-3 self-start sm:self-auto">
+          <a
+            href="https://github.com/Lombardimn/smartcloud.guard"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 rounded-lg hover:blur-none bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+            aria-label="Ver repositorio en GitHub"
+            title="Ver repositorio en GitHub"
+          >
+            <GitHub className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
+          </a>
+          <ThemeToggle />
+        </div>
       </header>
 
       <section className="max-w-5xl flex flex-col px-4 gap-4">
@@ -47,14 +69,14 @@ export default function Home() {
           />
 
           {/* Calendario */}
-          <div className="bg-zinc-100 dark:bg-purple-950/20 p-4 rounded-lg shadow mb-4">
+          <div className="bg-card p-4 rounded-lg shadow mb-4">
             <Calendar
               year={currentDate.getFullYear()}
               month={currentDate.getMonth()}
             />
 
           {/* Nota al pie - Solo Desktop */}
-          <p className="hidden sm:block mt-4 text-sm text-zinc-500 dark:text-zinc-400 border-t border-zinc-300 dark:border-zinc-700 pt-2">
+          <p className="hidden sm:block mt-4 text-sm text-muted-foreground border-t border-border pt-2">
             Nota: Los reemplazos se calculan con base en la rotación actual.
           </p>
           </div>

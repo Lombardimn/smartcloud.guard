@@ -19,16 +19,16 @@ export function CalendarLegend({ year, month }: CalendarLegendProps) {
   const holidays = useMemo(() => getHolidaysInMonth(year, month), [year, month]);
 
   return (
-    <div className="sm:hidden flex flex-col gap-4 p-4 bg-zinc-50 dark:bg-[#100037] rounded-lg border border-zinc-200 dark:border-zinc-700 shadow">
+    <div className="sm:hidden flex flex-col gap-4 p-4 bg-card rounded-lg border border-border shadow">
       {/* Encabezado */}
-      <div className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+      <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
         <Calendar className="w-4 h-4" />
         <span>Leyenda del Calendario</span>
       </div>
 
       {/* Sección: Miembros del Equipo */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-xs font-medium text-zinc-700 dark:text-zinc-300">
+        <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
           <User2 className="w-3.5 h-3.5" />
           <span>Miembros del Equipo</span>
         </div>
@@ -44,7 +44,7 @@ export function CalendarLegend({ year, month }: CalendarLegendProps) {
               >
                 {member.initials}
               </div>
-              <span className="text-zinc-700 dark:text-zinc-300 truncate">
+              <span className="text-foreground truncate">
                 {member.name}
               </span>
             </div>
@@ -54,24 +54,24 @@ export function CalendarLegend({ year, month }: CalendarLegendProps) {
 
       {/* Sección: Tipos de Guardia */}
       <div className="space-y-2">
-        <div className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+        <div className="text-xs font-medium text-muted-foreground">
           Tipos de Guardia
         </div>
         <div className="space-y-1.5">
-          <div className="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-300">
-            <div className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-[10px] font-medium">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="px-2 py-0.5 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded text-[10px] font-medium">
               Día 1
             </div>
             <span>Primer día de guardia</span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-300">
-            <div className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded text-[10px] font-medium">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="px-2 py-0.5 bg-navy-100 dark:bg-navy-900/30 text-navy-800 dark:text-navy-100 rounded text-[10px] font-medium">
               Día 2
             </div>
             <span>Segundo día de guardia</span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-300">
-            <div className="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-[10px] font-medium">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="px-2 py-0.5 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 rounded text-[10px] font-medium">
               🎉
             </div>
             <span>Feriado (sin asignación)</span>
@@ -82,7 +82,7 @@ export function CalendarLegend({ year, month }: CalendarLegendProps) {
       {/* Sección: Feriados del Mes */}
       {holidays.length > 0 && (
         <div className="space-y-2">
-          <div className="flex items-center gap-2 text-xs font-medium text-zinc-700 dark:text-zinc-300">
+          <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
             <PartyPopper className="w-3.5 h-3.5" />
             <span>Feriados de este mes</span>
           </div>
@@ -94,10 +94,10 @@ export function CalendarLegend({ year, month }: CalendarLegendProps) {
               >
                 <span className="text-[10px] mt-0.5">🎉</span>
                 <div className="flex-1">
-                  <div className="font-medium text-zinc-700 dark:text-zinc-300">
+                  <div className="font-medium text-foreground">
                     {holiday.name}
                   </div>
-                  <div className="text-[10px] text-zinc-500 dark:text-zinc-400">
+                  <div className="text-[10px] text-muted-foreground">
                     {new Date(holiday.date).toLocaleDateString('es-ES', {
                       day: 'numeric',
                       month: 'long'

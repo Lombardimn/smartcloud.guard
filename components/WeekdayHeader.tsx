@@ -16,7 +16,7 @@ export const WeekdayHeader = () => (
     {WEEKDAY_LABELS.map((day) => (
       <div
         key={day.short}
-        className="text-center font-semibold text-[#100037] dark:text-zinc-50 py-2 text-xs sm:text-sm"
+        className="text-center font-semibold text-navy-800 dark:text-neutral-50 py-2 text-xs sm:text-sm"
         role="columnheader"
         aria-label={day.ariaLabel}
       >

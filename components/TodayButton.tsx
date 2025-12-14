@@ -13,9 +13,9 @@ export const TodayButton = memo(({ onClick }: TodayButtonProps) => (
     className="
       min-w-11 min-h-11
       px-3 sm:px-4 py-2 
-      bg-[#100037] text-zinc-50 rounded-lg 
-      hover:bg-[#1e40af] active:bg-[#1e3a8a]
-      focus:outline-none focus:ring-2 focus:ring-[#1e40af] focus:ring-offset-2
+      bg-navy-800 dark:bg-neutral-800 text-neutral-50 rounded-lg 
+      hover:bg-violet-500 dark:hover:bg-neutral-700 active:bg-violet-600 dark:active:bg-neutral-600
+      focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
       transition-all duration-200
       font-medium text-sm sm:text-base
     "

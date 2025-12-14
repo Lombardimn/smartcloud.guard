@@ -12,19 +12,11 @@ export function RotationControl() {
   const { rotationState, resetRotation, hasState, isHydrated } = useRotationControl();
   const config = getTeamConfig();
 
-  // Mostrar estado de carga durante la hidratación
-  if (!isHydrated) {
+  // Durante SSR y antes de hidratar, mostrar el estado sin rotación guardada
+  // para evitar errores de hidratación
+  if (!isHydrated || !hasState) {
     return (
-      <div className="flex items-center gap-2 text-sm text-gray-500">
-        <RotateCw className="w-4 h-4 animate-spin" />
-        <span>Cargando estado de rotación...</span>
-      </div>
-    );
-  }
-
-  if (!hasState) {
-    return (
-      <div className="flex items-center gap-2 text-sm text-gray-500">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground" suppressHydrationWarning>
         <RotateCw className="w-4 h-4" />
         <span>Rotación calculada desde: {config.startDate}</span>
       </div>
@@ -32,14 +24,14 @@ export function RotationControl() {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 bg-violet-50 dark:bg-violet-950/20 rounded-lg border border-violet-200 dark:border-violet-800">
       <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2 text-sm font-medium text-blue-900 dark:text-blue-100">
+        <div className="flex items-center gap-2 text-sm font-medium text-violet-900 dark:text-violet-100">
           <RotateCw className="w-4 h-4" />
           <span>Rotación Continua (desde {config.startDate})</span>
         </div>
         {rotationState && (
-          <p className="text-xs text-blue-700 dark:text-blue-300">
+          <p className="text-xs text-violet-700 dark:text-violet-300">
             Último mes: {rotationState.lastMonth} •
             Días asignados: {rotationState.totalDaysAssigned} •
             Ciclo: {rotationState.lastDayType === 'complete' ? 'Completo' :
@@ -50,7 +42,7 @@ export function RotationControl() {
 
       <button
         onClick={resetRotation}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-md transition-colors"
+        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-violet-700 dark:text-violet-300 hover:bg-violet-100 dark:hover:bg-violet-900/30 rounded-md transition-colors"
         title="Recalcular desde fecha de inicio configurada"
       >
         <RefreshCw className="w-4 h-4" />

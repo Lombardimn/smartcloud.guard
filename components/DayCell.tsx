@@ -14,7 +14,7 @@ interface DayCellProps {
 
 /** Función de estilos para el borde */
 const getBorderClass = (isToday: boolean): string => {
-  return isToday ? 'border-4 border-blue-500 dark:border-amber-500' : 'border border-gray-400 dark:border-gray-700';
+  return isToday ? 'border-4 border-violet-500 dark:border-gold-400' : 'border border-neutral-300 dark:border-neutral-700';
 };
 
 function DayCell({ date, assignment }: DayCellProps) {
@@ -50,7 +50,7 @@ function DayCell({ date, assignment }: DayCellProps) {
         ${bgClass}
         ${borderClass}
         ${!isWorkDay ? 'opacity-50' : ''}
-        ${isHolidayDay ? 'bg-yellow-100 dark:bg-yellow-700' : ''}
+        ${isHolidayDay ? 'bg-gold-100 dark:bg-gold-700/20' : ''}
       `}
       role="gridcell"
       aria-label={ariaLabel}
@@ -72,7 +72,7 @@ function DayCell({ date, assignment }: DayCellProps) {
             <span className="text-2xl mb-1">
               {holidayInfo?.icon || '🎉'}
             </span>
-            <span className="hidden sm:block text-xs text-gray-600 dark:text-zinc-50 font-medium leading-tight">
+            <span className="hidden sm:block text-xs text-neutral-600 dark:text-neutral-100 font-medium leading-tight">
               {holidayInfo?.name || 'Feriado'}
             </span>
           </div>
@@ -92,7 +92,7 @@ function DayCell({ date, assignment }: DayCellProps) {
           </div>
         ) : isWorkDay ? (
           // Día laboral sin asignar
-          <div className="flex-1 flex items-center justify-center text-gray-400 text-xs sm:text-sm">
+          <div className="flex-1 flex items-center justify-center text-neutral-400 dark:text-neutral-500 text-xs sm:text-sm">
             Sin asignar
           </div>
         ) : null}

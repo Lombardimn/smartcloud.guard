@@ -1,25 +1,172 @@
 @import "tailwindcss";
 
-:root {
-  --background: oklch(98.5% 0 0);
-  --foreground: oklch(0.17 0.1 285.54);
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-outfit: 'Outfit', sans-serif;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: oklch(0.17 0.1 285.54);
-    --foreground: oklch(98.5% 0 0);
+    /* --- MODO CLARO (LIGHT) --- */
+    
+    /* Backgrounds */
+    --background: #ffffff;
+    --foreground: #0F0035;
+
+    /* Cards/Surfaces */
+    --card: #F4F4F4;
+    --card-foreground: #0F0035;
+
+    --popover: #ffffff;
+    --popover-foreground: #0F0035;
+
+    /* Primary: Tu color #0F0035 (Navy) */
+    --primary: #0F0035;
+    --primary-foreground: #F4F4F4;
+
+    /* Secondary: Gold #F0B034 */
+    --secondary: #F0B034;
+    --secondary-foreground: #09001F;
+
+    /* Muted */
+    --muted: #E9E9E9;
+    --muted-foreground: #6b7280;
+
+    /* Accent: Violet #6E59EE */
+    --accent: #6E59EE;
+    --accent-foreground: #ffffff;
+
+    /* Destructive */
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+
+    /* Borders e Inputs */
+    --border: #E9E9E9;
+    --input: #E9E9E9;
+    --ring: #6300FF;
+
+    /* Radius */
+    --radius: 0.5rem;
+    
+    /* Custom Brand Variables */
+    --brand-icon: #6300FF;
+    --brand-border-glow: #AE00FF;
+  }
+
+  .dark {
+    /* --- MODO OSCURO (DARK) --- */
+
+    /* Backgrounds */
+    --background: #09001F;
+    --foreground: #F4F4F4;
+
+    /* Cards/Surfaces */
+    --card: #0F0035;
+    --card-foreground: #F4F4F4;
+
+    --popover: #0F0035;
+    --popover-foreground: #F4F4F4;
+
+    /* Primary */
+    --primary: #6E59EE;
+    --primary-foreground: #ffffff;
+
+    /* Secondary */
+    --secondary: #F0B034;
+    --secondary-foreground: #09001F;
+
+    /* Muted */
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+
+    /* Accent */
+    --accent: #0F0035;
+    --accent-foreground: #F0B034;
+
+    /* Destructive */
+    --destructive: #7f1d1d;
+    --destructive-foreground: #F4F4F4;
+
+    /* Borders e Inputs */
+    --border: #2D1B5E;
+    --input: #2D1B5E;
+    --ring: #AE00FF;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Outfit', system-ui, sans-serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-outfit), Arial, Helvetica, sans-serif;
+@theme inline {
+  --font-outfit: 'Outfit', sans-serif;
+  
+  /* --- Colores Semánticos (mapeados a CSS variables) --- */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  
+  /* --- Paleta Navy (basada en #0F0035 y #09001F) --- */
+  --color-navy-50: #eef0ff;
+  --color-navy-100: #e0e3ff;
+  --color-navy-200: #c5cbff;
+  --color-navy-300: #a3adff;
+  --color-navy-400: #7e8aff;
+  --color-navy-500: #6300FF;
+  --color-navy-600: #58137c;
+  --color-navy-700: #AE00FF;
+  --color-navy-800: #0F0035;
+  --color-navy-900: #09001F;
+  --color-navy-950: #050014;
+  
+  /* --- Paleta Gold (basada en #F0B034) --- */
+  --color-gold-50: #fff9eb;
+  --color-gold-100: #ffecc6;
+  --color-gold-200: #ffd688;
+  --color-gold-300: #ffbf4d;
+  --color-gold-400: #F0B034;
+  --color-gold-500: #d9900f;
+  --color-gold-600: #ae6d06;
+  --color-gold-700: #864d08;
+  --color-gold-800: #6e3d0d;
+  --color-gold-900: #5a320f;
+  
+  /* --- Paleta Violet (basada en #6E59EE) --- */
+  --color-violet-50: #f5f3ff;
+  --color-violet-100: #ede9fe;
+  --color-violet-200: #ddd6fe;
+  --color-violet-300: #c4b5fd;
+  --color-violet-400: #8c7bf2;
+  --color-violet-500: #6E59EE;
+  --color-violet-600: #5b21b6;
+  --color-violet-700: #4c1d95;
+  
+  /* --- Paleta Neutral (basada en #F4F4F4 y #E9E9E9) --- */
+  --color-neutral-50: #F4F4F4;
+  --color-neutral-100: #E9E9E9;
+  --color-neutral-200: #dcdcdc;
+  --color-neutral-300: #bdbdbd;
+  --color-neutral-400: #9ca3af;
+  --color-neutral-500: #6b7280;
+  --color-neutral-600: #4b5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1f2937;
+  --color-neutral-900: #111827;
+  
+  /* --- Border Radius --- */
+  --radius: 0.5rem;
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 }

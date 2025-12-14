@@ -1,42 +1,138 @@
 # SmartCloud Guard - Progressive Web App
 
-This is a [Next.js](https://nextjs.org) Progressive Web Application (PWA) bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) and enhanced with PWA capabilities.
+Sistema de gestión de guardias rotativas para equipos de desarrollo. Aplicación web moderna construida con **Next.js 16**, **TypeScript** y **Tailwind CSS**.
+
+## 🚀 Características
+
+- ✅ **Rotación automática** de guardias entre 6 desarrolladores
+- ✅ **Sistema de 2 días consecutivos** por persona
+- ✅ **Solo días laborables** (lunes a viernes)
+- ✅ **Sistema de reemplazos** con registro de motivos
+- ✅ **Calendario visual** con colores distintivos
+- ✅ **Interfaz responsive** y moderna
+- ✅ **Navegación por meses** con vista actual resaltada
+- ✅ **TypeScript** para seguridad de tipos
+- ✅ **Web PWA** mayor flexibilidad de acceso para el usario.
+- ✅ **Deploy fácil en Vercel**
+
+## 📊 Configuración de Datos
+
+El calendario muestra:
+
+- 🟢 **Verde claro**: Primer día de guardia
+- 🟢 **Verde oscuro**: Segundo día de guardia
+- ⚠️ **Indicador naranja**: Reemplazos activos
+- 🔵 **Borde azul**: Día actual
+
+## 📋 Equipos
+
+1. **Matías Lombardi** (ML) - Color: #3B82F6 (Azul)
+2. **Soledad Cabrera** (SC) - Color: #EF4444 (Rojo)
+3. **Gonzalo Muñoz** (GM) - Color: #10B981 (Verde)
+4. **Carolina Calbulahue** (CC) - Color: #F59E0B (Naranja)
+5. **Claudio Aranda** (CA) - Color: #8B5CF6 (Púrpura)
+6. **Mariela Leiva** (ML2) - Color: #EC4899 (Rosa)
+
+### (data/team.json)
+
+```json
+{
+  "team": [
+    {
+      "id": "ml",
+      "name": "Matías Lombardi",
+      "initials": "ML",
+      "color": "#3B82F6"
+    }
+  ],
+  "rotationOrder": ["ml", "sc", "gm", "cc", "ca", "ml2"],
+  "config": {
+    "daysPerGuard": 2,
+    "startDate": "2026-01-01",
+    "workDaysOnly": true
+  }
+}
+```
+
+### 🔄 Orden de Rotación
+
+ML → SC → GM → CC → CA → ML2 → ML (ciclo infinito)
+
+## Reemplazos
+
+### (data/replacements.json)
+
+```json
+{
+  "replacements": [
+    {
+      "id": "repl-001",
+      "originalPersonId": "ml",
+      "replacementPersonId": "sc",
+      "startDate": "2025-12-15",
+      "endDate": "2025-12-20",
+      "reason": "Vacaciones",
+      "status": "active"
+    }
+  ]
+}
+```
+
+## Feriados ajustables
+
+```json
+{
+  "holidays": [
+        {
+      "date": "2025-12-25",
+      "name": "Navidad",
+      "type": "public",
+      "icon": "🎄"
+    }
+  ]
+}
+```
 
 ## PWA Features
 
-This application is a fully functional Progressive Web App with the following features:
+Esta aplicación es una Progressive Web App completamente funcional con las siguientes características:
 
-### ✅ Installable
-- Can be installed on mobile devices (Android/iOS) and desktop (Windows/macOS/Linux)
-- Provides an app-like experience when installed
-- Appears in the app drawer/home screen
+### ✅ Instalable
 
-### ✅ Offline Support
-- Works offline with cached content
-- Custom offline fallback page
-- Service worker for intelligent caching
+- Se puede instalar en dispositivos móviles (Android/iOS) y escritorio (Windows/macOS/Linux)
+- Proporciona una experiencia similar a una aplicación nativa cuando está instalada
+- Aparece en el cajón de aplicaciones/pantalla de inicio
 
-### ✅ Optimized Caching Strategies
-- **Google Fonts**: Cache First (365 days)
-- **Images**: Cache First (30 days)
-- **Static Resources (JS/CSS)**: Stale While Revalidate (24 hours)
-- **API Responses**: Network First with 10s timeout (24 hours)
-- **Pages**: Network First with 10s timeout (24 hours)
+### ✅ Soporte sin Conexión
 
-### ✅ Complete Manifest
-- Multiple icon sizes (72x72 to 512x512)
-- Maskable icons for Android adaptive icons
-- Apple touch icons for iOS
-- Standalone display mode for native app experience
+- Funciona sin conexión con contenido almacenado en caché
+- Página de respaldo personalizada para modo sin conexión
+- Service worker para almacenamiento en caché inteligente
 
-### ✅ SEO & Social Sharing
-- Open Graph tags for social media sharing
-- Twitter Card support
-- Comprehensive metadata for search engines
+### ✅ Estrategias de Caché Optimizadas
+
+- **Google Fonts**: Cache First (365 días)
+- **Imágenes**: Cache First (30 días)
+- **Recursos Estáticos (JS/CSS)**: Stale While Revalidate (24 horas)
+- **Respuestas API**: Network First con timeout de 10s (24 horas)
+- **Páginas**: Network First con timeout de 10s (24 horas)
+
+### ✅ Manifiesto Completo
+
+- Múltiples tamaños de iconos (72x72 a 512x512)
+- Iconos enmascarables para iconos adaptativos de Android
+- Iconos Apple touch para iOS
+- Modo de visualización independiente para experiencia de aplicación nativa
+
+### ✅ SEO y Compartir en Redes Sociales
+
+- Etiquetas Open Graph para compartir en redes sociales
+- Soporte para Twitter Card
+- Metadatos completos para motores de búsqueda
 
 ## Getting Started
 
-First, run the development server:
+Primero, debes ejecutar el server en desarrollo:
 
 ```bash
 npm run dev
@@ -48,98 +144,18 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-## Building for Production
-
-To build the application for production:
-
-```bash
-npm run build
-```
-
-**Note**: The build uses webpack (via `--webpack` flag) because the PWA plugin requires it. Next.js 16 uses Turbopack by default, but PWA plugins currently work only with webpack.
-
-To start the production server:
-
-```bash
-npm start
-```
+Abre [http://localhost:3000](http://localhost:3000) con tu navegador para ver el resultado.
 
 ## PWA Configuration
 
-The PWA configuration is located in `next.config.ts` using [@ducanh2912/next-pwa](https://github.com/DuCanhGH/next-pwa).
+La configuración de PWA se detalla en el documento [Implementacion PWA](./PWA_IMPLEMENTATION.md)
 
-### Key Configuration Points:
+## 🎯 Lógica de Negocio
 
-- **Service Worker**: Auto-generated at `/sw.js`
-- **Offline Fallback**: Custom page at `/offline.html`
-- **PWA Disabled in Development**: For easier debugging
-- **Manifest**: Located at `/public/manifest.json`
+### Algoritmo de Rotación
 
-## Testing PWA Features
-
-### Desktop (Chrome/Edge)
-1. Build and start the production server
-2. Open Chrome DevTools > Application tab
-3. Check "Manifest" section for manifest validation
-4. Check "Service Workers" section to verify registration
-5. Use Lighthouse to run PWA audit
-
-### Mobile Testing
-1. Deploy to a server with HTTPS (required for PWA)
-2. Open in mobile browser (Chrome/Safari)
-3. Look for "Add to Home Screen" or "Install App" prompt
-4. Install and test offline functionality
-
-### Lighthouse PWA Audit
-Run Lighthouse audit to verify PWA compliance:
-- Open Chrome DevTools
-- Go to Lighthouse tab
-- Select "Progressive Web App" category
-- Click "Generate report"
-
-## Project Structure
-
-```
-/public
-  /icons/              # PWA icons in multiple sizes
-    - icon-72x72.png
-    - icon-96x96.png
-    - icon-128x128.png
-    - icon-144x144.png
-    - icon-152x152.png
-    - icon-192x192.png
-    - icon-384x384.png
-    - icon-512x512.png
-    - icon-512x512-maskable.png
-    - apple-touch-icon.png
-  - manifest.json      # Web app manifest
-  - offline.html       # Offline fallback page
-  - sw.js             # Service worker (auto-generated)
-
-/app
-  - layout.tsx        # Root layout with PWA metadata
-  - page.tsx          # Home page
-
-next.config.ts        # Next.js + PWA configuration
-```
-
-## Learn More
-
-To learn more about the technologies used:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API
-- [PWA Documentation](https://web.dev/progressive-web-apps/) - learn about Progressive Web Apps
-- [next-pwa](https://github.com/DuCanhGH/next-pwa) - the PWA plugin used in this project
-- [Workbox](https://developers.google.com/web/tools/workbox) - service worker library
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-**Important**: Ensure your deployment uses HTTPS, as service workers require a secure context.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Inicio del mes**: Comienza con el primer desarrollador segun `startDate`.
+2. **Asignación**: 2 días consecutivos laborables.
+3. **Rotación**: Cumple el funcionamiento de [Rotación](./ROTACION_STARTDATE.md).
+4. **Ciclo**: Vuelve al inicio al terminar la lista.
+5. **Reemplazos**: Se aplican sobre las asignaciones base.
