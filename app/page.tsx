@@ -5,6 +5,7 @@ import { useState, useCallback } from "react";
 import { addMonths } from "@/lib/dateUtils";
 import Calendar from "@/components/Calendar";
 import { RotationControl } from "@/components/RotationControl";
+import { CalendarLegend } from "@/components/CalendarLegend";
 
 export default function Home() {
   // Estado para la fecha del calendario
@@ -46,12 +47,23 @@ export default function Home() {
           />
 
           {/* Calendario */}
-          <div className="bg-zinc-100 dark:bg-purple-950/20 p-4 rounded-lg shadow">
+          <div className="bg-zinc-100 dark:bg-purple-950/20 p-4 rounded-lg shadow mb-4">
             <Calendar
               year={currentDate.getFullYear()}
               month={currentDate.getMonth()}
             />
+
+          {/* Nota al pie - Solo Desktop */}
+          <p className="hidden sm:block mt-4 text-sm text-zinc-500 dark:text-zinc-400 border-t border-zinc-300 dark:border-zinc-700 pt-2">
+            Nota: Los reemplazos se calculan con base en la rotación actual.
+          </p>
           </div>
+
+          {/* Leyenda del Calendario - Solo Móvil */}
+          <CalendarLegend
+            year={currentDate.getFullYear()}
+            month={currentDate.getMonth()}
+          />
         </div>
       </section>
     </main>
