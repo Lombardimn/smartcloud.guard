@@ -14,7 +14,7 @@ interface DayCellProps {
 
 /** Función de estilos para el borde */
 const getBorderClass = (isToday: boolean): string => {
-  return isToday ? 'border-4 border-violet-500 dark:border-gold-400' : 'border border-neutral-300 dark:border-neutral-700';
+  return isToday ? 'border-4 border-secondary' : 'border border-border';
 };
 
 function DayCell({ date, assignment }: DayCellProps) {
@@ -25,46 +25,46 @@ function DayCell({ date, assignment }: DayCellProps) {
   const dayNumber = date.getDate();
   const isHolidayDay = useMemo(() => isHoliday(date), [date]);
   const holidayInfo = useMemo(() => isHolidayDay ? getHolidayInfo(date) : null, [date, isHolidayDay]);
-  
+
   // Datos del miembro asignado (getTeamMember ya maneja undefined)
   const teamMember = useMemo<TeamMember | undefined>(
     () => getTeamMember(assignment?.personId),
     [assignment?.personId]
   );
-  
+
   // Clases de estilo
   const bgClass = useMemo(() => getBackgroundClass(isWorkDay, assignment, date), [isWorkDay, assignment, date]);
   const borderClass = getBorderClass(isToday);
   const textColorClass = useMemo(() => getTextColorClass(assignment?.type), [assignment?.type]);
-  
+
   // Etiqueta accesible
   const ariaLabel = useMemo(() => {
     const dateStr = date.toLocaleDateString('es-AR', { day: 'numeric', month: 'long' });
     return `${dateStr}${isToday ? ', hoy' : ''}`;
   }, [date, isToday]);
-  
+
   return (
     <div
-      className={`
-        aspect-square p-2 sm:p-3 rounded-lg transition-all hover:shadow-lg
-        ${bgClass}
-        ${borderClass}
-        ${!isWorkDay ? 'opacity-50' : ''}
-        ${isHolidayDay ? 'bg-gold-100 dark:bg-gold-700/20' : ''}
-      `}
       role="gridcell"
       aria-label={ariaLabel}
+      className={`
+          aspect-square p-2 sm:p-3 rounded-lg transition-all hover:shadow-lg hover-shadow-background hover:scale-[1.02]
+          ${borderClass}
+          ${bgClass}
+          ${!isWorkDay ? 'opacity-40' : ''} 
+          ${isHolidayDay ? 'bg-accent-foreground' : ''}
+        `}
     >
       {/* Contenedor con altura fija para evitar CLS */}
       <div className="flex flex-col h-full min-h-32 sm:min-h-36">
         {/* Fecha */}
-        <time 
+        <time
           className={`text-sm sm:text-base font-semibold mb-1 sm:mb-2 ${textColorClass}`}
           dateTime={isoDate}
         >
           {dayNumber}
         </time>
-        
+
         {/* Contenido de asignación */}
         {isHolidayDay ? (
           // Mostrar feriado
@@ -72,14 +72,14 @@ function DayCell({ date, assignment }: DayCellProps) {
             <span className="text-2xl mb-1">
               {holidayInfo?.icon || '🎉'}
             </span>
-            <span className="hidden sm:block text-xs text-neutral-600 dark:text-neutral-100 font-medium leading-tight">
+            <span className="hidden sm:block text-xs text-accent font-medium leading-tight">
               {holidayInfo?.name || 'Feriado'}
             </span>
           </div>
         ) : assignment && teamMember ? (
           // Mostrar asignación normal
           <div className="flex-1 flex flex-col justify-center items-center text-center">
-            <MemberAvatar 
+            <MemberAvatar
               initials={teamMember.initials}
               color={teamMember.color}
               name={teamMember.name}

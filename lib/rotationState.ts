@@ -1,30 +1,68 @@
 /**
- * Gestión del estado de rotación entre meses
- * Mantiene la continuidad de las guardias usando localStorage
- * Usa startDate como punto de referencia para cálculos precisos
+ * Gestión del estado de rotación de guardias
+ * 
+ * FILOSOFÍA DEL SISTEMA:
+ * - Las asignaciones PASADAS (< hoy) son INMUTABLES y se guardan en localStorage
+ * - Las asignaciones FUTURAS (>= hoy) se calculan dinámicamente desde startDate
+ * - startDate es la fecha de referencia para calcular el orden de rotación
+ * - Si startDate cambia, solo afecta el futuro, el pasado permanece inmutable
  */
 
 import { getTeamConfig } from '@/lib/teamUtils';
 import { isWeekday, isHoliday } from '@/lib/dateUtils';
+import { Assignment } from '@/types/assignment.type';
 
 const STORAGE_KEY = 'smartcloud-guard-rotation-state';
+const CONFIG_KEY = 'smartcloud-guard-config-hash';
 
+/**
+ * Estado de rotación que se persiste en localStorage
+ * Contiene asignaciones históricas INMUTABLES (antes de hoy)
+ */
 export interface RotationState {
-  /** Último mes procesado en formato YYYY-MM */
-  lastMonth: string;
-  /** Índice de la última persona asignada en rotationOrder */
-  lastPersonIndex: number;
-  /** Día del ciclo: 'day1' o 'day2' o 'complete' (ciclo completo) */
-  lastDayType: 'day1' | 'day2' | 'complete';
-  /** Total de días asignados en el último mes */
-  totalDaysAssigned: number;
+  /** Hash de configuración (startDate + rotationOrder) para detectar cambios */
+  configHash: string;
+  /** Fecha de última sincronización */
+  lastSync: string;
+  /** Asignaciones históricas inmutables (YYYY-MM-DD -> Assignment) */
+  historicalAssignments: Record<string, Assignment>;
+  /** Total de días guardados en histórico */
+  totalHistoricalDays: number;
 }
 
 /**
- * Formatea año y mes como YYYY-MM
+ * Genera un hash de la configuración actual
+ * Usado para detectar cambios en startDate o rotationOrder
  */
-function formatYearMonth(year: number, month: number): string {
-  return `${year}-${String(month + 1).padStart(2, '0')}`;
+function generateConfigHash(): string {
+  const config = getTeamConfig();
+  const rotationOrder = require('@/data/team.json').rotationOrder;
+  return `${config.startDate}|${rotationOrder.join(',')}`;
+}
+
+/**
+ * Verifica si la configuración ha cambiado
+ */
+export function hasConfigChanged(): boolean {
+  if (typeof window === 'undefined') return false;
+  
+  try {
+    const stored = localStorage.getItem(CONFIG_KEY);
+    const current = generateConfigHash();
+    return stored !== current;
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * Formatea fecha como YYYY-MM-DD
+ */
+function formatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 /**
@@ -35,7 +73,17 @@ export function loadRotationState(): RotationState | null {
   
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : null;
+    if (!stored) return null;
+    
+    const state = JSON.parse(stored) as RotationState;
+    
+    // Verificar si la configuración cambió
+    if (state.configHash !== generateConfigHash()) {
+      console.warn('⚠️ Configuración cambió - los datos históricos se mantienen pero se recalculará el futuro');
+      // No invalidamos el histórico, solo marcamos que hay cambio
+    }
+    
+    return state;
   } catch (error) {
     console.error('Error loading rotation state:', error);
     return null;
@@ -50,6 +98,7 @@ export function saveRotationState(state: RotationState): void {
   
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(CONFIG_KEY, state.configHash);
   } catch (error) {
     console.error('Error saving rotation state:', error);
   }
@@ -57,38 +106,151 @@ export function saveRotationState(state: RotationState): void {
 
 /**
  * Limpia el estado de rotación (útil para reiniciar)
+ * ADVERTENCIA: Esto eliminará TODO el historial inmutable
  */
 export function clearRotationState(): void {
   if (typeof window === 'undefined') return;
   
   try {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(CONFIG_KEY);
+    console.log('✅ Estado de rotación limpiado');
   } catch (error) {
     console.error('Error clearing rotation state:', error);
   }
 }
 
 /**
- * Calcula cuántos días laborables han pasado desde una fecha de inicio hasta una fecha objetivo
- * @param startDate - Fecha de inicio (formato YYYY-MM-DD)
- * @param targetYear - Año objetivo
- * @param targetMonth - Mes objetivo (0-11)
- * @returns Número de días laborables transcurridos (sin incluir el día de inicio)
+ * Obtiene una asignación histórica específica
  */
-function calculateWorkdaysSinceStart(startDate: string, targetYear: number, targetMonth: number): number {
-  const start = new Date(startDate);
-  const target = new Date(targetYear, targetMonth, 1);
+export function getHistoricalAssignment(date: string): Assignment | null {
+  const state = loadRotationState();
+  if (!state || !state.historicalAssignments) return null;
   
-  // Si el target es antes o igual al start, retornar 0
+  return state.historicalAssignments[date] || null;
+}
+
+/**
+ * Guarda una asignación en el histórico (solo si es pasada)
+ */
+export function saveHistoricalAssignment(assignment: Assignment): void {
+  const assignmentDate = new Date(assignment.date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  // Solo guardar si la fecha es anterior a hoy
+  if (assignmentDate >= today) {
+    return;
+  }
+  
+  let state = loadRotationState();
+  
+  if (!state) {
+    state = {
+      configHash: generateConfigHash(),
+      lastSync: new Date().toISOString(),
+      historicalAssignments: {},
+      totalHistoricalDays: 0
+    };
+  }
+  
+  // Agregar o actualizar asignación
+  const dateKey = assignment.date;
+  const isNew = !state.historicalAssignments[dateKey];
+  
+  state.historicalAssignments[dateKey] = assignment;
+  
+  if (isNew) {
+    state.totalHistoricalDays++;
+  }
+  
+  state.lastSync = new Date().toISOString();
+  state.configHash = generateConfigHash();
+  
+  saveRotationState(state);
+}
+
+/**
+ * Guarda múltiples asignaciones históricas en batch
+ */
+export function saveHistoricalAssignments(assignments: Assignment[]): void {
+  // Solo ejecutar en el cliente
+  if (typeof window === 'undefined') return;
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const existingState = loadRotationState();
+  
+  // Crear estado nuevo o usar el existente
+  const state: RotationState = existingState || {
+    configHash: generateConfigHash(),
+    lastSync: new Date().toISOString(),
+    historicalAssignments: {},
+    totalHistoricalDays: 0
+  };
+  
+  // Asegurar que historicalAssignments existe
+  if (!state.historicalAssignments || typeof state.historicalAssignments !== 'object') {
+    state.historicalAssignments = {};
+  }
+  
+  let newCount = 0;
+  
+  assignments.forEach(assignment => {
+    try {
+      const assignmentDate = new Date(assignment.date);
+      
+      // Solo guardar si es anterior a hoy
+      if (assignmentDate < today) {
+        const dateKey = assignment.date;
+        const isNew = !state.historicalAssignments[dateKey];
+        
+        state.historicalAssignments[dateKey] = assignment;
+        
+        if (isNew) {
+          newCount++;
+        }
+      }
+    } catch (error) {
+      console.error('Error procesando asignación:', assignment, error);
+    }
+  });
+  
+  // Recalcular total y actualizar metadata
+  state.totalHistoricalDays = Object.keys(state.historicalAssignments || {}).length;
+  state.lastSync = new Date().toISOString();
+  state.configHash = generateConfigHash();
+  
+  if (newCount > 0) {
+    saveRotationState(state);
+    console.log(`✅ Guardadas ${newCount} nuevas asignaciones históricas`);
+  }
+}
+
+/**
+ * Calcula cuántos días laborables han pasado desde startDate hasta una fecha específica
+ * NO incluye el startDate mismo - la rotación empieza DESDE startDate
+ */
+function calculateWorkdaysSinceStart(startDate: string, targetDate: Date): number {
+  const start = new Date(startDate);
+  start.setHours(0, 0, 0, 0);
+  
+  const target = new Date(targetDate);
+  target.setHours(0, 0, 0, 0);
+  
+  // Si target es el mismo día o antes que startDate, retornar 0
   if (target <= start) {
     return 0;
   }
   
   let workDays = 0;
   const current = new Date(start);
-  current.setDate(current.getDate() + 1); // Empezar desde el día siguiente al startDate
   
-  // Iterar desde el día después de startDate hasta el primer día del mes target
+  // Empezar a contar desde el DÍA SIGUIENTE al startDate
+  current.setDate(current.getDate() + 1);
+  
+  // Contar días laborables hasta la fecha target (exclusive)
   while (current < target) {
     if (isWeekday(current) && !isHoliday(current)) {
       workDays++;
@@ -100,23 +262,21 @@ function calculateWorkdaysSinceStart(startDate: string, targetYear: number, targ
 }
 
 /**
- * Calcula el índice de inicio para un mes basado en startDate configurado
+ * Calcula el punto de inicio para un día específico basado en startDate
  * 
- * @param year - Año del mes actual
- * @param month - Mes actual (0-11)
+ * @param targetDate - Fecha para la cual calcular el punto de inicio
  * @param rotationOrderLength - Tamaño del array de rotación
- * @returns Objeto con índice de inicio y tipo de día
+ * @returns Objeto con índice de persona y tipo de día
  */
 export function calculateStartingPoint(
-  year: number,
-  month: number,
+  targetDate: Date,
   rotationOrderLength: number
 ): { personIndex: number; dayType: 'day1' | 'day2' | 'complete' } {
   const config = getTeamConfig();
   const startDate = config.startDate;
   
-  // Calcular días laborables desde startDate hasta el inicio de este mes
-  const workdaysSinceStart = calculateWorkdaysSinceStart(startDate, year, month);
+  // Calcular días laborables desde startDate hasta targetDate
+  const workdaysSinceStart = calculateWorkdaysSinceStart(startDate, targetDate);
   
   // Cada persona tiene 2 días (day1, day2)
   const daysPerPerson = 2;
@@ -129,7 +289,7 @@ export function calculateStartingPoint(
   // Determinar el tipo de día
   let dayType: 'day1' | 'day2' | 'complete';
   if (remainderDays === 0) {
-    dayType = 'complete'; // Comienza un nuevo ciclo completo
+    dayType = 'complete'; // Comienza un nuevo ciclo completo de 2 días
   } else if (remainderDays === 1) {
     dayType = 'day2'; // Falta completar day2
   } else {
@@ -140,102 +300,37 @@ export function calculateStartingPoint(
 }
 
 /**
- * Calcula el índice de inicio para un mes basado en el estado anterior
- * DEPRECATED: Reemplazado por calculateStartingPoint que usa startDate
- * Mantenido para compatibilidad
+ * Obtiene estadísticas del estado actual
  */
-/**
- * Calcula el índice de inicio para un mes basado en el estado anterior
- * DEPRECATED: Reemplazado por calculateStartingPoint que usa startDate
- * Mantenido para compatibilidad
- */
-export function calculateStartingPointLegacy(
-  year: number,
-  month: number,
-  rotationOrderLength: number
-): { personIndex: number; dayType: 'day1' | 'day2' | 'complete' } {
-  const currentMonth = formatYearMonth(year, month);
-  const savedState = loadRotationState();
+export function getRotationStats(): {
+  hasHistorical: boolean;
+  totalDays: number;
+  lastSync: string | null;
+  configChanged: boolean;
+} {
+  const state = loadRotationState();
   
-  // Si no hay estado guardado, iniciar desde el principio
-  if (!savedState) {
-    return { personIndex: 0, dayType: 'complete' };
-  }
-  
-  // Si es el mismo mes, usar el estado guardado (re-render del mismo mes)
-  if (savedState.lastMonth === currentMonth) {
+  if (!state || !state.historicalAssignments) {
     return {
-      personIndex: savedState.lastPersonIndex,
-      dayType: savedState.lastDayType
+      hasHistorical: false,
+      totalDays: 0,
+      lastSync: null,
+      configChanged: false
     };
   }
   
-  // Verificar si el mes actual es consecutivo al último guardado
-  const isConsecutive = isConsecutiveMonth(savedState.lastMonth, currentMonth);
-  
-  if (!isConsecutive) {
-    // Si no es consecutivo, iniciar desde el principio
-    console.log('Non-consecutive month detected, starting from beginning');
-    return { personIndex: 0, dayType: 'complete' };
+  // Calcular total real de días guardados de forma segura
+  let totalDays = 0;
+  try {
+    totalDays = Object.keys(state.historicalAssignments || {}).length;
+  } catch {
+    totalDays = state.totalHistoricalDays || 0;
   }
   
-  // Calcular dónde continuar basado en el estado anterior
-  if (savedState.lastDayType === 'complete') {
-    // Si el ciclo estaba completo, pasar a la siguiente persona
-    const nextPersonIndex = (savedState.lastPersonIndex + 1) % rotationOrderLength;
-    return { personIndex: nextPersonIndex, dayType: 'complete' };
-  } else if (savedState.lastDayType === 'day1') {
-    // Si quedó en day1, continuar con day2 de la misma persona
-    return { personIndex: savedState.lastPersonIndex, dayType: 'day2' };
-  } else {
-    // lastDayType === 'day2', completar ciclo y pasar a la siguiente persona
-    const nextPersonIndex = (savedState.lastPersonIndex + 1) % rotationOrderLength;
-    return { personIndex: nextPersonIndex, dayType: 'complete' };
-  }
-}
-
-/**
- * Verifica si dos meses en formato YYYY-MM son consecutivos
- */
-function isConsecutiveMonth(prevMonth: string, currentMonth: string): boolean {
-  const [prevYear, prevMonthNum] = prevMonth.split('-').map(Number);
-  const [currYear, currMonthNum] = currentMonth.split('-').map(Number);
-  
-  // Mismo año, mes siguiente
-  if (prevYear === currYear) {
-    return currMonthNum === prevMonthNum + 1;
-  }
-  
-  // Cambio de año: diciembre -> enero
-  if (prevYear + 1 === currYear && prevMonthNum === 12 && currMonthNum === 1) {
-    return true;
-  }
-  
-  return false;
-}
-
-/**
- * Actualiza el estado de rotación después de generar un schedule
- * 
- * @param year - Año del mes procesado
- * @param month - Mes procesado (0-11)
- * @param lastPersonIndex - Índice de la última persona asignada
- * @param lastDayType - Tipo del último día asignado
- * @param totalDaysAssigned - Total de días asignados
- */
-export function updateRotationState(
-  year: number,
-  month: number,
-  lastPersonIndex: number,
-  lastDayType: 'day1' | 'day2' | 'complete',
-  totalDaysAssigned: number
-): void {
-  const state: RotationState = {
-    lastMonth: formatYearMonth(year, month),
-    lastPersonIndex,
-    lastDayType,
-    totalDaysAssigned,
+  return {
+    hasHistorical: totalDays > 0,
+    totalDays,
+    lastSync: state.lastSync || null,
+    configChanged: hasConfigChanged()
   };
-  
-  saveRotationState(state);
 }

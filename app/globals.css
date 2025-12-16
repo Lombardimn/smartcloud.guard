@@ -118,51 +118,51 @@
   --color-destructive-foreground: var(--destructive-foreground);
   
   /* --- Paleta Navy (basada en #0F0035 y #09001F) --- */
-  --color-navy-50: #eef0ff;
-  --color-navy-100: #e0e3ff;
-  --color-navy-200: #c5cbff;
-  --color-navy-300: #a3adff;
-  --color-navy-400: #7e8aff;
-  --color-navy-500: #6300FF;
-  --color-navy-600: #58137c;
-  --color-navy-700: #AE00FF;
-  --color-navy-800: #0F0035;
-  --color-navy-900: #09001F;
-  --color-navy-950: #050014;
+  --navy-50: #eef0ff;
+  --navy-100: #e0e3ff;
+  --navy-200: #c5cbff;
+  --navy-300: #a3adff;
+  --navy-400: #7e8aff;
+  --navy-500: #6300FF;
+  --navy-600: #58137c;
+  --navy-700: #AE00FF;
+  --navy-800: #0F0035;
+  --navy-900: #09001F;
+  --navy-950: #050014;
   
   /* --- Paleta Gold (basada en #F0B034) --- */
-  --color-gold-50: #fff9eb;
-  --color-gold-100: #ffecc6;
-  --color-gold-200: #ffd688;
-  --color-gold-300: #ffbf4d;
-  --color-gold-400: #F0B034;
-  --color-gold-500: #d9900f;
-  --color-gold-600: #ae6d06;
-  --color-gold-700: #864d08;
-  --color-gold-800: #6e3d0d;
-  --color-gold-900: #5a320f;
+  --gold-50: #fff9eb;
+  --gold-100: #ffecc6;
+  --gold-200: #ffd688;
+  --gold-300: #ffbf4d;
+  --gold-400: #F0B034;
+  --gold-500: #d9900f;
+  --gold-600: #ae6d06;
+  --gold-700: #864d08;
+  --gold-800: #6e3d0d;
+  --gold-900: #5a320f;
   
   /* --- Paleta Violet (basada en #6E59EE) --- */
-  --color-violet-50: #f5f3ff;
-  --color-violet-100: #ede9fe;
-  --color-violet-200: #ddd6fe;
-  --color-violet-300: #c4b5fd;
-  --color-violet-400: #8c7bf2;
-  --color-violet-500: #6E59EE;
-  --color-violet-600: #5b21b6;
-  --color-violet-700: #4c1d95;
+  --violet-50: #f5f3ff;
+  --violet-100: #ede9fe;
+  --violet-200: #ddd6fe;
+  --violet-300: #c4b5fd;
+  --violet-400: #8c7bf2;
+  --violet-500: #6E59EE;
+  --violet-600: #5b21b6;
+  --violet-700: #4c1d95;
   
   /* --- Paleta Neutral (basada en #F4F4F4 y #E9E9E9) --- */
-  --color-neutral-50: #F4F4F4;
-  --color-neutral-100: #E9E9E9;
-  --color-neutral-200: #dcdcdc;
-  --color-neutral-300: #bdbdbd;
-  --color-neutral-400: #9ca3af;
-  --color-neutral-500: #6b7280;
-  --color-neutral-600: #4b5563;
-  --color-neutral-700: #374151;
-  --color-neutral-800: #1f2937;
-  --color-neutral-900: #111827;
+  --neutral-50: #F4F4F4;
+  --neutral-100: #E9E9E9;
+  --neutral-200: #dcdcdc;
+  --neutral-300: #bdbdbd;
+  --neutral-400: #9ca3af;
+  --neutral-500: #6b7280;
+  --neutral-600: #4b5563;
+  --neutral-700: #374151;
+  --neutral-800: #1f2937;
+  --neutral-900: #111827;
   
   /* --- Border Radius --- */
   --radius: 0.5rem;

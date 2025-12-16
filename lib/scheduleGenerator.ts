@@ -1,5 +1,10 @@
 /**
  * Generador principal de schedules/calendarios de guardias
+ * 
+ * ESTRATEGIA:
+ * 1. Para fechas PASADAS: usar datos guardados en localStorage (inmutables)
+ * 2. Para fechas FUTURAS: calcular dinámicamente desde startDate
+ * 3. Guardar automáticamente el histórico de asignaciones pasadas
  */
 
 import { Assignment, AssignmentType } from '@/types/assignment.type';
@@ -8,7 +13,11 @@ import { getWorkDaysInMonth, formatDate } from '@/lib/dateUtils';
 import { validateMonthYear, validateRotationOrder } from '@/lib/scheduleValidators';
 import { buildReplacementLookupMap, applyReplacements } from '@/lib/replacementUtils';
 import { getRotationOrder } from '@/lib/teamUtils';
-import { calculateStartingPoint, updateRotationState } from '@/lib/rotationState';
+import { 
+  calculateStartingPoint, 
+  getHistoricalAssignment,
+  saveHistoricalAssignments
+} from '@/lib/rotationState';
 
 /**
  * Configuración para la generación de schedule
@@ -45,16 +54,18 @@ function createAssignment(
 }
 
 /**
- * Genera las asignaciones base sin reemplazos
- * Implementa rotación circular de 2 días por persona con continuidad entre meses
+ * Genera las asignaciones para un mes
+ * 
+ * LÓGICA:
+ * 1. Intenta usar datos históricos guardados (para días pasados)
+ * 2. Calcula dinámicamente desde startDate (para días futuros o sin datos)
+ * 3. Guarda automáticamente las asignaciones pasadas en localStorage
  * 
  * @param workDays - Array de días laborables
  * @param rotationOrder - Orden de rotación de personas
- * @param year - Año del mes (para persistir estado)
- * @param month - Mes (0-11) (para persistir estado)
- * @returns Array de asignaciones base
- * 
- * Complejidad: O(n) donde n = número de días laborables
+ * @param year - Año del mes
+ * @param month - Mes (0-11)
+ * @returns Array de asignaciones
  */
 function generateBaseAssignments(
   workDays: Date[],
@@ -63,62 +74,51 @@ function generateBaseAssignments(
   month: number
 ): Assignment[] {
   const assignments: Assignment[] = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   
-  // Calcular punto de inicio basado en el estado del mes anterior
-  const startingPoint = calculateStartingPoint(year, month, rotationOrder.length);
-  let currentPersonIndex = startingPoint.personIndex;
-  let currentDayType: 'day1' | 'day2' | 'complete' = startingPoint.dayType;
-  let dayIndex = 0;
-  
-  // Si el mes anterior dejó el ciclo a la mitad (day2), continuar con day2
-  if (currentDayType === 'day2' && dayIndex < workDays.length) {
+  // Procesar cada día laborable
+  for (let i = 0; i < workDays.length; i++) {
+    const currentDay = workDays[i];
+    const dateStr = formatDate(currentDay);
+    
+    // Para días pasados, intentar usar datos guardados
+    if (currentDay < today) {
+      const historical = getHistoricalAssignment(dateStr);
+      
+      if (historical) {
+        // Usar dato histórico guardado (inmutable)
+        assignments.push(historical);
+        continue;
+      }
+    }
+    
+    // Para días futuros o sin datos históricos, calcular desde startDate
+    const startingPoint = calculateStartingPoint(currentDay, rotationOrder.length);
+    
+    let currentPersonIndex = startingPoint.personIndex;
+    let currentDayType = startingPoint.dayType;
+    
+    // Determinar qué asignar en este día
+    let assignmentDayType: 'day1' | 'day2';
+    
+    if (currentDayType === 'day2') {
+      // Completar el day2 pendiente
+      assignmentDayType = 'day2';
+    } else {
+      // Iniciar nuevo ciclo con day1
+      assignmentDayType = 'day1';
+    }
+    
     const personId = rotationOrder[currentPersonIndex];
+    
     assignments.push(
-      createAssignment(workDays[dayIndex], personId, 'day2')
+      createAssignment(currentDay, personId, assignmentDayType)
     );
-    dayIndex++;
-    // Pasar a la siguiente persona con ciclo completo
-    currentPersonIndex = (currentPersonIndex + 1) % rotationOrder.length;
-    currentDayType = 'complete';
   }
   
-  // Continuar con el patrón normal de 2 días por persona
-  while (dayIndex < workDays.length) {
-    const personId = rotationOrder[currentPersonIndex];
-    const remainingDays = workDays.length - dayIndex;
-    
-    // Día 1 de guardia (si hay días disponibles)
-    if (remainingDays >= 1) {
-      assignments.push(
-        createAssignment(workDays[dayIndex], personId, 'day1')
-      );
-      dayIndex++;
-      currentDayType = 'day1';
-    }
-    
-    // Día 2 de guardia (si hay días disponibles)
-    if (remainingDays >= 2 && dayIndex < workDays.length) {
-      assignments.push(
-        createAssignment(workDays[dayIndex], personId, 'day2')
-      );
-      dayIndex++;
-      currentDayType = 'complete';
-    }
-    
-    // Si completó el ciclo o solo asignó day1, pasar a la siguiente persona
-    if (currentDayType === 'complete' || remainingDays < 2) {
-      currentPersonIndex = (currentPersonIndex + 1) % rotationOrder.length;
-    }
-  }
-  
-  // Guardar el estado de rotación para el próximo mes
-  updateRotationState(
-    year,
-    month,
-    currentPersonIndex,
-    currentDayType,
-    assignments.length
-  );
+  // Guardar automáticamente las asignaciones pasadas en el histórico
+  saveHistoricalAssignments(assignments);
   
   return assignments;
 }

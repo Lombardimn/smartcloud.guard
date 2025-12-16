@@ -159,3 +159,5 @@ La configuración de PWA se detalla en el documento [Implementacion PWA](./PWA_I
 3. **Rotación**: Cumple el funcionamiento de [Rotación](./ROTACION_STARTDATE.md).
 4. **Ciclo**: Vuelve al inicio al terminar la lista.
 5. **Reemplazos**: Se aplican sobre las asignaciones base.
+
+- NOTA: todos estos puntos estan validados en el [Sistema de Rotación](./SISTEMA_ROTACION.md)

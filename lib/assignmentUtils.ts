@@ -2,12 +2,12 @@ import { Assignment, AssignmentType } from "../types/assignment.type";
 import { isHoliday } from "@/lib/dateUtils";
 
 export const ASSIGNMENT_COLORS = {
-  [AssignmentType.REGULAR]:  'bg-guard-day1',
-  [AssignmentType.SPECIAL]: 'bg-guard-day2',
-  [AssignmentType.HOLIDAY]: 'bg-gray-200',
-  noWorkDay: 'bg-gray-100',
-  noAssignment: 'bg-white',
-  replacement: 'bg-blue-50'
+  [AssignmentType.REGULAR]:  'bg-muted-background',
+  [AssignmentType.SPECIAL]: 'bg-background',
+  [AssignmentType.HOLIDAY]: 'bg-secondary/20',
+  noWorkDay: 'bg-secondary/20',
+  noAssignment: 'bg-primary-foreground/10',
+  replacement: 'bg-accent/20',
 } as const;
 
 /**
@@ -97,15 +97,15 @@ export const getBackgroundClass = (
  * @returns Clase CSS para el color de texto
  */
 export const getTextColorClass = (assignmentType?:  AssignmentType | null): string => {
-  if (!assignmentType) return 'text-gray-600';
+  if (!assignmentType) return 'text-foreground';
   
   const textColors = {
-    [AssignmentType.REGULAR]: 'text-gray-900 dark:text-gray-100',
-    [AssignmentType.SPECIAL]: 'text-gray-900 dark:text-gray-100',
-    [AssignmentType.HOLIDAY]: 'text-amber-900 dark:text-zinc-50',
+    [AssignmentType.REGULAR]: 'text-foreground',
+    [AssignmentType.SPECIAL]: 'text-gray-900',
+    [AssignmentType.HOLIDAY]: 'text-secondary',
   };
 
-  return textColors[assignmentType] || 'text-gray-900 dark:text-zinc-50';
+  return textColors[assignmentType] || 'text-gray-900';
 };
 
 /**

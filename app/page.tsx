@@ -45,11 +45,11 @@ export default function Home() {
             href="https://github.com/Lombardimn/smartcloud.guard"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-lg hover:blur-none bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+            className="p-2 rounded-lg hover:blur-none bg-card hover:bg-card-foreground/30 transition-colors"
             aria-label="Ver repositorio en GitHub"
             title="Ver repositorio en GitHub"
           >
-            <GitHub className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
+            <GitHub className="w-5 h-5" />
           </a>
           <ThemeToggle />
         </div>
@@ -58,7 +58,7 @@ export default function Home() {
       <section className="max-w-5xl flex flex-col px-4 gap-4">
         {/* Control de rotación */}
         <RotationControl />
-        
+
         {/* Selector de mes */}
         <div className="flex flex-col gap-4">
           <MonthSelector
@@ -69,16 +69,18 @@ export default function Home() {
           />
 
           {/* Calendario */}
-          <div className="bg-card p-4 rounded-lg shadow mb-4">
-            <Calendar
-              year={currentDate.getFullYear()}
-              month={currentDate.getMonth()}
-            />
+          <div className="p-0.5 mb-2 bg-linear-to-r from-border to-primary/10 rounded-lg">
+            <div className="bg-card p-4 rounded-lg shadow">
+              <Calendar
+                year={currentDate.getFullYear()}
+                month={currentDate.getMonth()}
+              />
 
-          {/* Nota al pie - Solo Desktop */}
-          <p className="hidden sm:block mt-4 text-sm text-muted-foreground border-t border-border pt-2">
-            Nota: Los reemplazos se calculan con base en la rotación actual.
-          </p>
+              {/* Nota al pie - Solo Desktop */}
+              <p className="hidden sm:block mt-4 text-sm text-muted-foreground border-t border-border pt-2">
+                Nota: Los reemplazos se calculan con base en la rotación actual.
+              </p>
+            </div>
           </div>
 
           {/* Leyenda del Calendario - Solo Móvil */}

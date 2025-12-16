@@ -1,1 +1,13 @@
-{"replacements": []}
+{
+  "replacements": [
+    {
+      "id": "repl-001",
+      "originalPersonId": "mb",
+      "replacementPersonId": "rv",
+      "startDate": "2026-02-11",
+      "endDate": "2026-02-12",
+      "reason": "Vacaciones",
+      "status": "active"
+    }
+  ]
+}

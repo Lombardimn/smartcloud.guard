@@ -1,29 +1,40 @@
 /**
  * Hook para controlar el estado de rotación de guardias
- * Permite resetear la rotación cuando sea necesario
+ * Proporciona información objetiva y control para recalcular cuando sea necesario
  */
 
 import { useCallback, useSyncExternalStore } from 'react';
 import { 
-  loadRotationState, 
   clearRotationState, 
-  RotationState 
+  getRotationStats
 } from '@/lib/rotationState';
 
-// Store externo para el estado de rotación
-let rotationStateCache: RotationState | null = null;
+// Store externo para estadísticas de rotación
+let statsCache: ReturnType<typeof getRotationStats> | null = null;
 let listeners: Array<() => void> = [];
 
-function getSnapshot(): RotationState | null {
-  if (typeof window === 'undefined') return null;
-  if (rotationStateCache === null) {
-    rotationStateCache = loadRotationState();
+// Valor constante para SSR (evita crear nuevo objeto en cada llamada)
+const SSR_STATS = {
+  hasHistorical: false,
+  totalDays: 0,
+  lastSync: null,
+  configChanged: false
+};
+
+function getSnapshot() {
+  if (typeof window === 'undefined') {
+    return SSR_STATS;
   }
-  return rotationStateCache;
+  
+  if (statsCache === null) {
+    statsCache = getRotationStats();
+  }
+  
+  return statsCache;
 }
 
-function getServerSnapshot(): RotationState | null {
-  return null;
+function getServerSnapshot() {
+  return SSR_STATS;
 }
 
 function subscribe(callback: () => void) {
@@ -38,33 +49,48 @@ function notifyListeners() {
 }
 
 export function useRotationControl() {
-  const rotationState = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const stats = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const isHydrated = useSyncExternalStore(
+    () => () => {}, // subscribe (no-op since this never changes)
+    () => true,      // client snapshot
+    () => false      // server snapshot
+  );
   
   /**
-   * Reinicia la rotación desde el principio
-   * Útil cuando se quiere comenzar un nuevo ciclo
+   * Reinicia la rotación eliminando TODO el historial
+   * ADVERTENCIA: Esto borrará las asignaciones guardadas
    */
   const resetRotation = useCallback(() => {
+    const confirmMessage = stats.hasHistorical
+      ? `⚠️ Esto eliminará ${stats.totalDays} días de historial guardado.\n\n¿Deseas continuar?`
+      : '¿Deseas reiniciar el sistema de rotación?';
+    
+    if (!window.confirm(confirmMessage)) {
+      return;
+    }
+    
     clearRotationState();
-    rotationStateCache = null;
+    statsCache = null;
     notifyListeners();
+    
     // Forzar re-render del calendario
     window.dispatchEvent(new Event('rotation-reset'));
-  }, []);
+    
+    console.log('✅ Rotación reiniciada');
+  }, [stats]);
   
   /**
-   * Recarga el estado actual de rotación
+   * Recarga las estadísticas actuales
    */
-  const refreshState = useCallback(() => {
-    rotationStateCache = loadRotationState();
+  const refreshStats = useCallback(() => {
+    statsCache = getRotationStats();
     notifyListeners();
   }, []);
   
   return {
-    rotationState,
+    stats,
     resetRotation,
-    refreshState,
-    hasState: rotationState !== null,
-    isHydrated: typeof window !== 'undefined',
+    refreshStats,
+    isHydrated,
   };
 }

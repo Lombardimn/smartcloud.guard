@@ -18,7 +18,7 @@ interface CalendarProps {
  */
 const EmptyCell = memo(() => (
   <div 
-    className="aspect-square"
+    className="w-full h-full border border-border bg-muted/50 rounded-lg"
     role="gridcell"
     aria-hidden="true"
   />
@@ -44,10 +44,11 @@ function Calendar({ year, month }: CalendarProps) {
   }, []);
   
   // Generar asignaciones del mes con manejo de errores
-  // Se regenera cuando cambia year, month o se resetea la rotación
+  // IMPORTANTE: Siempre recalcula para garantizar consistencia con startDate
   const assignments = useMemo(() => {
     try {
-      return generateScheduleForMonthFromData(year, month);
+      const schedule = generateScheduleForMonthFromData(year, month);
+      return schedule;
     } catch (error) {
       console.error('Error generando schedule:', error);
       return [];
