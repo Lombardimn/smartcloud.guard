@@ -5,6 +5,7 @@ interface AssignmentBadgeProps {
   type?: AssignmentType;
   dayType: 'day1' | 'day2';
   isReplacement?: boolean;
+  replacementReason?: string;
 }
 
 const TYPE_LABELS = {
@@ -13,7 +14,7 @@ const TYPE_LABELS = {
   [AssignmentType.HOLIDAY]: '🎉 Feriado'
 } as const;
 
-export const AssignmentBadge = memo(({ type, dayType, isReplacement }: AssignmentBadgeProps) => {
+export const AssignmentBadge = memo(({ type, dayType, isReplacement, replacementReason }: AssignmentBadgeProps) => {
   const assignmentLabel = isReplacement 
     ? '🔄 Reemplazo' 
     : type 
@@ -27,7 +28,15 @@ export const AssignmentBadge = memo(({ type, dayType, isReplacement }: Assignmen
         <div className={`text-xs flex items-center gap-1 font-medium ${
           isReplacement ? 'text-primary' : 'text-muted-foreground'
         }`}>
-          <span>{assignmentLabel}</span>
+          <span className="hidden sm:inline">{assignmentLabel}</span>
+          <span className="sm:hidden">{assignmentLabel.split(' ')[0]}</span>
+        </div>
+      )}
+      
+      {/* Motivo del reemplazo (solo desktop) */}
+      {isReplacement && replacementReason && (
+        <div className="hidden sm:block text-[8px] text-muted-foreground italic leading-tight">
+          ({replacementReason})
         </div>
       )}
       

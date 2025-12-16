@@ -32,6 +32,14 @@ function DayCell({ date, assignment }: DayCellProps) {
     [assignment?.personId]
   );
 
+  // Datos del miembro original (para mostrar en reemplazos)
+  const originalMember = useMemo<TeamMember | undefined>(
+    () => assignment?.isReplacement && assignment?.originalPersonId 
+      ? getTeamMember(assignment.originalPersonId) 
+      : undefined,
+    [assignment]
+  );
+
   // Clases de estilo
   const bgClass = useMemo(() => getBackgroundClass(isWorkDay, assignment, date), [isWorkDay, assignment, date]);
   const borderClass = getBorderClass(isToday);
@@ -77,17 +85,52 @@ function DayCell({ date, assignment }: DayCellProps) {
             </span>
           </div>
         ) : assignment && teamMember ? (
-          // Mostrar asignación normal
+          // Mostrar asignación normal o reemplazo
           <div className="flex-1 flex flex-col justify-center items-center text-center">
-            <MemberAvatar
-              initials={teamMember.initials}
-              color={teamMember.color}
-              name={teamMember.name}
-            />
+            {/* Avatares apilados en caso de reemplazo */}
+            {assignment.isReplacement && originalMember ? (
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center justify-center">
+                  {/* Avatar del reemplazante (izquierda) */}
+                  <div className="relative z-10">
+                    <MemberAvatar
+                      initials={teamMember.initials}
+                      color={teamMember.color}
+                      name={teamMember.name}
+                      showName={false}
+                      size="small"
+                    />
+                  </div>
+                  {/* Avatar del reemplazado (derecha, parcialmente cubierto) */}
+                  <div className="relative z-0 -ml-2 sm:-ml-3 opacity-80">
+                    <MemberAvatar
+                      initials={originalMember.initials}
+                      color={originalMember.color}
+                      name={originalMember.name}
+                      showName={false}
+                      size="small"
+                    />
+                  </div>
+                </div>
+                {/* Nombre del reemplazante centrado debajo */}
+                <span className="hidden sm:block text-sm font-medium text-foreground truncate w-full px-1 text-center">
+                  {teamMember.name.split(' ')[0]}
+                </span>
+              </div>
+            ) : (
+              // Avatar normal sin reemplazo
+              <MemberAvatar
+                initials={teamMember.initials}
+                color={teamMember.color}
+                name={teamMember.name}
+              />
+            )}
+            
             <AssignmentBadge
               type={assignment.type}
               dayType={assignment.dayType}
               isReplacement={assignment.isReplacement}
+              replacementReason={assignment.replacementReason}
             />
           </div>
         ) : isWorkDay ? (

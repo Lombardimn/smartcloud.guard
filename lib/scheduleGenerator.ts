@@ -18,6 +18,7 @@ import {
   getHistoricalAssignment,
   saveHistoricalAssignments
 } from '@/lib/rotationState';
+import replacementsData from '@/data/replacements.json';
 
 /**
  * Configuración para la generación de schedule
@@ -203,6 +204,6 @@ export function generateScheduleForMonthFromData(
 ): Assignment[] {
   return generateScheduleForMonth(year, month, {
     rotationOrder: getRotationOrder(),
-    replacements: []
+    replacements: replacementsData.replacements as Replacement[]
   });
 }

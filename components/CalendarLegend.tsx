@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { getAllTeamMembers } from '@/lib/teamUtils';
 import { getHolidaysInMonth } from '@/lib/holidayUtils';
 import { Calendar, User2, PartyPopper } from 'lucide-react';
+import replacementsData from '@/data/replacements.json';
 
 interface CalendarLegendProps {
   year: number;
@@ -77,6 +78,46 @@ export function CalendarLegend({ year, month }: CalendarLegendProps) {
               </div>
               <span>Feriado (sin asignación)</span>
             </div>
+          </div>
+        </div>
+
+        {/* Sección: Reemplazos */}
+        <div className="space-y-2">
+          <div className="text-xs font-medium text-muted-foreground">
+            🔄 Reemplazos
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-start gap-2 text-xs text-muted-foreground">
+              <span className="text-primary font-semibold shrink-0">🔄</span>
+              <div className="flex-1">
+                <p className="leading-relaxed">
+                  Cuando se muestra <span className="text-primary font-medium">&quot;🔄 Reemplazo&quot;</span>,
+                  verás dos avatares: el de quien <strong className="text-foreground">está haciendo</strong> la guardia (izquierda)
+                  y el de la persona reemplazada (derecha).
+                </p>
+              </div>
+            </div>
+            
+            {/* Lista de reemplazos activos */}
+            {replacementsData.replacements.filter(r => r.status === 'active').map(replacement => {
+              const originalMember = getAllTeamMembers().find(m => m.id === replacement.originalPersonId);
+              const replacementMember = getAllTeamMembers().find(m => m.id === replacement.replacementPersonId);
+              
+              return (
+                <div key={replacement.id} className="flex items-start gap-2 text-xs bg-primary/5 p-2 rounded">
+                  <span className="text-[10px] mt-0.5">📝</span>
+                  <div className="flex-1">
+                    <p className="text-foreground font-medium">
+                      {replacementMember?.name} → {originalMember?.name}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">
+                      {new Date(replacement.startDate).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} - {new Date(replacement.endDate).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}
+                      {' • '}{replacement.reason}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
