@@ -1,105 +1,237 @@
 {
   "holidays": [
-        {
+    {
+      "date": "2025-01-01",
+      "name": "Año nuevo",
+      "type": "immovable",
+      "icon": "🎉"
+    },
+    {
+      "date": "2025-03-03",
+      "name": "Carnaval",
+      "type": "immovable",
+      "icon": "🎭"
+    },
+    {
+      "date": "2025-03-04",
+      "name": "Carnaval",
+      "type": "immovable",
+      "icon": "🎭"
+    },
+    {
+      "date": "2025-03-24",
+      "name": "Día Nacional de la Memoria por la Verdad y la Justicia",
+      "type": "immovable",
+      "icon": "🕯️"
+    },
+    {
+      "date": "2025-04-02",
+      "name": "Día del Veterano y de los Caídos en la Guerra de Malvinas",
+      "type": "immovable",
+      "icon": "🎖️"
+    },
+    {
+      "date": "2025-04-18",
+      "name": "Viernes Santo",
+      "type": "immovable",
+      "icon": "✝️"
+    },
+    {
+      "date": "2025-05-01",
+      "name": "Día del Trabajador",
+      "type": "immovable",
+      "icon": "👷‍♂️"
+    },
+    {
+      "date": "2025-05-02",
+      "name": "Puente turístico no laborable",
+      "type": "bridge",
+      "icon": "🏖️"
+    },
+    {
+      "date": "2025-05-25",
+      "name": "Día de la Revolución de Mayo",
+      "type": "immovable",
+      "icon": "🇦🇷"
+    },
+    {
+      "date": "2025-06-16",
+      "name": "Paso a la Inmortalidad del General Martín Güemes",
+      "type": "transferable",
+      "icon": "🕯️"
+    },
+    {
+      "date": "2025-06-20",
+      "name": "Paso a la Inmortalidad del General Manuel Belgrano",
+      "type": "immovable",
+      "icon": "🇦🇷"
+    },
+    {
+      "date": "2025-07-09",
+      "name": "Día de la Independencia",
+      "type": "immovable",
+      "icon": "🇦🇷"
+    },
+    {
+      "date": "2025-08-15",
+      "name": "Puente turístico no laborable",
+      "type": "bridge",
+      "icon": "🏖️"
+    },
+    {
+      "date": "2025-08-17",
+      "name": "Paso a la Inmortalidad del Gral. José de San Martín",
+      "type": "transferable",
+      "icon": "🕯️"
+    },
+    {
+      "date": "2025-10-10",
+      "name": "Puente turístico no laborable",
+      "type": "bridge",
+      "icon": "🏖️"
+    },
+    {
+      "date": "2025-10-12",
+      "name": "Día del Respeto a la Diversidad Cultural",
+      "type": "transferable",
+      "icon": "🌎"
+    },
+    {
+      "date": "2025-11-21",
+      "name": "Puente turístico no laborable",
+      "type": "bridge",
+      "icon": "🏖️"
+    },
+    {
+      "date": "2025-11-24",
+      "name": "Día de la Soberanía Nacional",
+      "type": "transferable",
+      "icon": "🇦🇷"
+    },
+    {
+      "date": "2025-12-08",
+      "name": "Día de la Inmaculada Concepción de María",
+      "type": "immovable",
+      "icon": "🙏"
+    },
+    {
       "date": "2025-12-25",
       "name": "Navidad",
-      "type": "public",
+      "type": "immovable",
       "icon": "🎄"
     },
     {
       "date": "2026-01-01",
-      "name": "Año Nuevo",
-      "type": "public",
+      "name": "Año nuevo",
+      "type": "immovable",
       "icon": "🎉"
     },
     {
       "date": "2026-02-16",
       "name": "Carnaval",
-      "type": "public",
+      "type": "immovable",
       "icon": "🎭"
     },
     {
       "date": "2026-02-17",
       "name": "Carnaval",
-      "type": "public",
+      "type": "immovable",
       "icon": "🎭"
     },
     {
+      "date": "2026-03-23",
+      "name": "Puente turístico no laborable",
+      "type": "bridge",
+      "icon": "🏖️"
+    },
+    {
       "date": "2026-03-24",
-      "name": "Día de la Memoria por la Verdad y la Justicia",
-      "type": "public",
+      "name": "Día Nacional de la Memoria por la Verdad y la Justicia",
+      "type": "immovable",
       "icon": "🕯️"
     },
     {
       "date": "2026-04-02",
       "name": "Día del Veterano y de los Caídos en la Guerra de Malvinas",
-      "type": "public",
-      "icon": "🇦🇷"
+      "type": "immovable",
+      "icon": "🎖️"
     },
     {
       "date": "2026-04-03",
       "name": "Viernes Santo",
-      "type": "public",
+      "type": "immovable",
       "icon": "✝️"
     },
     {
       "date": "2026-05-01",
       "name": "Día del Trabajador",
-      "type": "public",
+      "type": "immovable",
       "icon": "👷‍♂️"
     },
     {
       "date": "2026-05-25",
       "name": "Día de la Revolución de Mayo",
-      "type": "public",
+      "type": "immovable",
       "icon": "🇦🇷"
     },
     {
-      "date": "2026-06-17",
+      "date": "2026-06-15",
       "name": "Paso a la Inmortalidad del General Martín Güemes",
-      "type": "public",
+      "type": "transferable",
       "icon": "🕯️"
     },
     {
       "date": "2026-06-20",
       "name": "Paso a la Inmortalidad del General Manuel Belgrano",
-      "type": "public",
-      "icon": "🕯️"
+      "type": "immovable",
+      "icon": "🇦🇷"
     },
     {
       "date": "2026-07-09",
       "name": "Día de la Independencia",
-      "type": "public",
+      "type": "immovable",
       "icon": "🇦🇷"
     },
     {
+      "date": "2026-07-10",
+      "name": "Puente turístico no laborable",
+      "type": "bridge",
+      "icon": "🏖️"
+    },
+    {
       "date": "2026-08-17",
-      "name": "Paso a la Inmortalidad del General José de San Martín",
-      "type": "public",
+      "name": "Paso a la Inmortalidad del Gral. José de San Martín",
+      "type": "transferable",
       "icon": "🕯️"
     },
     {
       "date": "2026-10-12",
       "name": "Día del Respeto a la Diversidad Cultural",
-      "type": "public",
+      "type": "transferable",
       "icon": "🌎"
     },
     {
-      "date": "2026-11-20",
+      "date": "2026-11-23",
       "name": "Día de la Soberanía Nacional",
-      "type": "public",
+      "type": "transferable",
       "icon": "🇦🇷"
     },
     {
+      "date": "2026-12-07",
+      "name": "Puente turístico no laborable",
+      "type": "bridge",
+      "icon": "🏖️"
+    },
+    {
       "date": "2026-12-08",
-      "name": "Inmaculada Concepción de María",
-      "type": "public",
+      "name": "Día de la Inmaculada Concepción de María",
+      "type": "immovable",
       "icon": "🙏"
     },
     {
       "date": "2026-12-25",
       "name": "Navidad",
-      "type": "public",
+      "type": "immovable",
       "icon": "🎄"
     }
   ]

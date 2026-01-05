@@ -17,6 +17,18 @@ const getBorderClass = (isToday: boolean): string => {
   return isToday ? 'border-4 border-secondary' : 'border border-border';
 };
 
+/** Mapeo de tipos de feriados a etiquetas */
+const HOLIDAY_TYPE_LABELS: Record<string, string> = {
+  immovable: 'Inamovible',
+  transferable: 'Trasladable',
+  bridge: 'Puente'
+} as const;
+
+/** Obtiene la etiqueta del tipo de feriado */
+const getHolidayTypeLabel = (type?: string): string => {
+  return type ? HOLIDAY_TYPE_LABELS[type] || '' : '';
+};
+
 function DayCell({ date, assignment }: DayCellProps) {
   // Calcular propiedades de la fecha (memoizadas para performance)
   const isWorkDay = useMemo(() => isWeekday(date), [date]);
@@ -82,6 +94,9 @@ function DayCell({ date, assignment }: DayCellProps) {
             </span>
             <span className="hidden sm:block text-xs text-accent font-medium leading-tight">
               {holidayInfo?.name || 'Feriado'}
+            </span>
+            <span className="hidden sm:block text-xs text-accent font-light leading-tight mt-2">
+              {getHolidayTypeLabel(holidayInfo?.type)}
             </span>
           </div>
         ) : assignment && teamMember ? (

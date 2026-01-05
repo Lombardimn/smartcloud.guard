@@ -32,12 +32,29 @@ export interface RotationState {
 
 /**
  * Genera un hash de la configuración actual
- * Usado para detectar cambios en startDate o rotationOrder
+ * Usado para detectar cambios en cualquier JSON de configuración
  */
 function generateConfigHash(): string {
+  const teamData = require('@/data/team.json');
+  const replacementsData = require('@/data/replacements.json');
+  const holidaysData = require('@/data/holidays.json');
+  
   const config = getTeamConfig();
-  const rotationOrder = require('@/data/team.json').rotationOrder;
-  return `${config.startDate}|${rotationOrder.join(',')}`;
+  const rotationOrder = teamData.rotationOrder;
+  const team = teamData.team;
+  
+  // Incluir todos los datos relevantes en el hash
+  const parts = [
+    config.startDate,
+    config.daysPerGuard.toString(),
+    config.workDaysOnly.toString(),
+    rotationOrder.join(','),
+    JSON.stringify(team),
+    JSON.stringify(replacementsData),
+    JSON.stringify(holidaysData)
+  ];
+  
+  return parts.join('|');
 }
 
 /**
@@ -274,12 +291,12 @@ export function calculateStartingPoint(
 ): { personIndex: number; dayType: 'day1' | 'day2' | 'complete' } {
   const config = getTeamConfig();
   const startDate = config.startDate;
+  const daysPerPerson = config.daysPerGuard;
   
   // Calcular días laborables desde startDate hasta targetDate
   const workdaysSinceStart = calculateWorkdaysSinceStart(startDate, targetDate);
   
-  // Cada persona tiene 2 días (day1, day2)
-  const daysPerPerson = 2;
+  // Calcular ciclos según días configurados por persona
   const totalCycles = Math.floor(workdaysSinceStart / daysPerPerson);
   const remainderDays = workdaysSinceStart % daysPerPerson;
   
@@ -289,11 +306,11 @@ export function calculateStartingPoint(
   // Determinar el tipo de día
   let dayType: 'day1' | 'day2' | 'complete';
   if (remainderDays === 0) {
-    dayType = 'complete'; // Comienza un nuevo ciclo completo de 2 días
+    dayType = 'complete'; // Comienza un nuevo ciclo completo
   } else if (remainderDays === 1) {
-    dayType = 'day2'; // Falta completar day2
+    dayType = 'day2'; // Segundo día (o último en ciclos de 2)
   } else {
-    dayType = 'complete';
+    dayType = 'complete'; // Para ciclos > 2, considerar completo
   }
   
   return { personIndex, dayType };
